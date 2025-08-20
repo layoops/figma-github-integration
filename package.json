@@ -2,17 +2,17 @@
   "name": "figma-github-integration-widget",
   "version": "1.0.0",
   "description": "Figma widget integrating GitHub for seamless project management within your design workflow.",
-  "homepage": "https://github.com/layooops/figma-github-integration",
+  "homepage": "https://github.com/layoops/figma-github-integration",
   "repository": {
     "type": "git",
-    "url": "https://github.com/layooops/figma-github-integration.git"
+    "url": "https://github.com/layoops/figma-github-integration.git"
   },
   "bugs": {
-    "url": "https://github.com/layooops/figma-github-integration/issues"
+    "url": "https://github.com/layoops/figma-github-integration/issues"
   },
   "author": {
-    "name": "Vitalii Astahov (layooops)",
-    "url": "https://layooops.com"
+    "name": "Vitalii Astahov (layoops)",
+    "url": "https://layoops.com"
   },
   "keywords": [
     "figma",

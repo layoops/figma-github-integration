@@ -1,10 +1,10 @@
 name: 🚀 Feature Proposal
 description: Suggest a new idea for Figma Github Integration Widget
-title: "[Feature]: "
+title: '[Feature]: '
 labels:
   - feature
 projects:
-  - layooops/3
+  - layoops/3
 assignees:
   - vitaliiastakhov
 body:
