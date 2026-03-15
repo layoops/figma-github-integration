@@ -30,13 +30,15 @@ export const EntityBodyHeader = ({ right = undefined, left, ...rest }: EntityBod
     >
       <AutoLayout padding={8} width="fill-parent" verticalAlignItems="center" spacing={4}>
         <AutoLayout width="fill-parent" verticalAlignItems="center" spacing={8}>
-          <Avatar
-            name="Comment author"
-            size="extra-small"
-            textIsHidden={!left.title}
-            text={left.title ?? undefined}
-            avatarUrl={left.avatarUrl}
-          />
+          {left.avatarUrl && (
+            <Avatar
+              name="Comment author"
+              size="extra-small"
+              textIsHidden={!left.title}
+              text={left.title ?? undefined}
+              avatarUrl={left.avatarUrl}
+            />
+          )}
           {right?.text.text ? (
             <CustomText
               href={right?.text.url}

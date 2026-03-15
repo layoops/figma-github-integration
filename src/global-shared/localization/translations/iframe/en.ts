@@ -10,6 +10,7 @@ export const iframeEn: IframeLocalizationKeys = {
   validation: {
     required: 'This field is required.',
     repoRequiredForSearch: "Search queries must include a 'repo:owner/repo' term.",
+    invalidTarget: 'Must be a valid GitHub repository or project URL.',
   },
 
   common: {
@@ -393,6 +394,7 @@ export const iframeEn: IframeLocalizationKeys = {
     failedToConnect: 'Failed to connect to auth server',
     invalidAuthUrl: 'Invalid auth URL',
     authTimeout: 'Authentication timed out. Please try again.',
+    serverUnavailable: 'Server unavailable',
   },
 
   uiComponents: {

@@ -1,7 +1,7 @@
 import type { Issue } from '@octokit/graphql-schema';
 
 import { MESSAGE_TYPES } from '@/global-shared/message-type';
-import { githubGraphqlApi } from '@/shared/api/graphql/github-graphql-api';
+import { githubRequest } from '@/shared/api/graphql/github-graphql-api';
 import { sendMessageToWidget } from '@/shared/lib/utils';
 
 import { CREATE_ISSUE_QUERY } from '../api/create-issue-query';
@@ -15,21 +15,30 @@ type GetIssueProps = {
   token: string;
 };
 
+type IssueQueryResponse = {
+  createIssue: {
+    issue: Issue | null;
+  };
+};
+
 export async function createIssue({ variables: { id, title, body }, token }: GetIssueProps) {
-  const response = await githubGraphqlApi({
+  const response = await githubRequest<IssueQueryResponse>({
+    query: CREATE_ISSUE_QUERY,
+    variables: {
+      id,
+      includeMilestone: true,
+      includeComments: true,
+      includeLabels: true,
+      includeDevelopment: true,
+      title: title,
+      body: body,
+    },
     token,
-    body: JSON.stringify({
-      query: CREATE_ISSUE_QUERY,
-      variables: {
-        id: id,
-        title: title,
-        body: body,
-      },
-    }),
   });
 
-  const json = await response.json();
-  return json?.data.createIssue.issue as Issue;
+  const data = response?.createIssue.issue;
+
+  return data;
 }
 
 export const linkCreatedIssue = async ({

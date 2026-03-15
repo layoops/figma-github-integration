@@ -8,6 +8,7 @@ export type IframeLocalizationKeys = {
   validation: {
     required: string;
     repoRequiredForSearch: string;
+    invalidTarget: string;
   };
 
   common: {
@@ -370,6 +371,7 @@ export type IframeLocalizationKeys = {
     failedToConnect: string;
     invalidAuthUrl: string;
     authTimeout: string;
+    serverUnavailable: string;
   };
 
   uiComponents: {

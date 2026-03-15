@@ -3,7 +3,7 @@ import type { DraftIssue, Issue, PullRequest } from '@octokit/graphql-schema';
 import { Fragment } from '../../../widget-components';
 import { isValidHexColor } from '../../lib/color-utils';
 import { formatDate } from '../../lib/helpers';
-import { useModal, useWidgetTranslation } from '../../lib/hooks';
+import { useWidgetTranslation } from '../../lib/hooks';
 import { presetColors } from '../../styles';
 import { Avatar } from '../avatar';
 import { Button } from '../buttons';
@@ -22,7 +22,6 @@ export const EntityMetadataSection = ({
 }: EntityMetadataSectionProps) => {
   const { t, locale } = useWidgetTranslation();
   const { assignees } = entity;
-  const { openModal } = useModal();
 
   const fixColor = (color: string) => {
     if (isValidHexColor(color)) {

@@ -10,6 +10,7 @@ export const iframeRu: IframeLocalizationKeys = {
   validation: {
     required: 'Поле обязательно для заполнения',
     repoRequiredForSearch: "Поисковые запросы должны содержать 'repo:владелец/репозиторий'.",
+    invalidTarget: 'Должен быть действительный URL репозитория или проекта GitHub.',
   },
 
   common: {
@@ -397,6 +398,7 @@ export const iframeRu: IframeLocalizationKeys = {
     failedToConnect: 'Не удалось подключиться к серверу авторизации',
     invalidAuthUrl: 'Неверный URL авторизации',
     authTimeout: 'Время авторизации истекло. Попробуйте снова.',
+    serverUnavailable: 'Сервер не доступен',
   },
 
   uiComponents: {

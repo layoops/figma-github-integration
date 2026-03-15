@@ -17,6 +17,7 @@ const SHORT_POLL_INTERVAL_MS = 3000;
 const LONG_POLL_INTERVAL_MS = 5000;
 const SHORT_POLL_ATTEMPTS_COUNT = 8;
 const MAX_POLL_ATTEMPTS = 30;
+const MAX_CONSECUTIVE_ERRORS = 3;
 
 export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAuthButtonProps) => {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAu
   const [authError, setAuthError] = useState<Error | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pollAttemptCountRef = useRef<number>(0);
+  const consecutiveErrorCountRef = useRef<number>(0);
 
   const stopPolling = () => {
     if (pollIntervalRef.current) {
@@ -31,6 +33,7 @@ export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAu
       pollIntervalRef.current = null;
     }
     pollAttemptCountRef.current = 0;
+    consecutiveErrorCountRef.current = 0;
   };
 
   useEffect(() => {
@@ -81,17 +84,32 @@ export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAu
           }
 
           const pollRes = await fetch(`${SERVER_BASE_URL}/api/github/poll?id=${stateId}`);
-          if (pollRes.ok) {
-            const data = await pollRes.json();
-            if (data.complete && data.token) {
+
+          if (!pollRes.ok) {
+            consecutiveErrorCountRef.current++;
+            if (consecutiveErrorCountRef.current >= MAX_CONSECUTIVE_ERRORS) {
               stopPolling();
               setIsLoading(false);
-              onTokenReceived(data.token);
-              return;
+              setAuthError(new Error(t('errors.serverUnavailable')));
             }
+            return;
+          }
+
+          consecutiveErrorCountRef.current = 0;
+          const data = await pollRes.json();
+          if (data.complete && data.token) {
+            stopPolling();
+            setIsLoading(false);
+            onTokenReceived(data.token);
           }
         } catch (e: any) {
+          consecutiveErrorCountRef.current++;
           console.error('Polling error:', e);
+          if (consecutiveErrorCountRef.current >= MAX_CONSECUTIVE_ERRORS) {
+            stopPolling();
+            setIsLoading(false);
+            setAuthError(new Error(t('errors.serverUnavailable')));
+          }
         }
       };
 

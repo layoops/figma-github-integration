@@ -1,4 +1,4 @@
-import type { Issue } from '@octokit/graphql-schema';
+import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
 import { LinkExternalIcon } from '@primer/octicons-react';
 import {
@@ -37,20 +37,33 @@ export const IssuePreview = ({ issue }: IssuePreviewProps) => {
   // @ts-expect-error Нет типов для parent
   const issueParent: IssueParent | undefined = issue['parent'];
 
-  const projects = issue?.projectItems?.nodes?.filter((projectNode) => Boolean(projectNode));
+  const draftIssue =
+    (issue.__typename as DraftIssue['__typename']) && (issue as unknown as DraftIssue);
+
+  const issueProjects = issue?.projectItems?.nodes?.filter((projectNode) => Boolean(projectNode));
+
+  const draftIssueProjects = draftIssue?.projectV2Items?.nodes;
+  const draftIssueProjectItem = draftIssueProjects?.[0];
+
+  const projects = issueProjects ?? draftIssueProjects;
+
+  const issueUrl =
+    draftIssue?.__typename === 'DraftIssue' && draftIssueProjectItem?.project?.url
+      ? `${draftIssueProjectItem?.project?.url}?pane=issue&itemId=${draftIssueProjectItem.databaseId}`
+      : issue?.url;
 
   return (
     <EntityPreview
       number={issue.number}
       entity={issue.state === 'OPEN' ? 'issue-opened' : 'issue-closed'}
       title={issue?.title}
-      link={issue?.url}
+      link={issueUrl}
       status={
         <LabelGroup>
           <EntityStateLabel target="issue" state={issue.state} />
         </LabelGroup>
       }
-      author={issue.author}
+      author={issue.author ?? draftIssue?.creator}
       authorAssociation={issue.authorAssociation}
       createdAt={issue.createdAt}
       comments={issue?.comments?.nodes}

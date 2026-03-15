@@ -131,8 +131,14 @@ export const GQL_DRAFT_ISSUE_FRAGMENT = `fragment DraftIssueFragment on DraftIss
    __typename
   id
   title
+  bodyHTML
   bodyText
   updatedAt
+  createdAt
+  creator {
+    avatarUrl
+    login
+  }
   assignees(first: 3) {
     nodes {
       name
@@ -143,6 +149,8 @@ export const GQL_DRAFT_ISSUE_FRAGMENT = `fragment DraftIssueFragment on DraftIss
   }
   projectV2Items(first: 2) {
     nodes {
+      id
+      databaseId
       project {
         __typename
         title

@@ -151,6 +151,7 @@ export const IssuesTable = ({
         />
       }
       actions={
+        // TODO: Сделать заполнение формы с url проекта
         <Button size="small" variant="primary" as={Link} to={ROUTES_MAP[ROUTES.ISSUE_CREATE]}>
           {t('links.newIssue.title')}
         </Button>
