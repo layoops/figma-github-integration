@@ -12,7 +12,7 @@ function MainWidget() {
     <Layout>
       {widgetType === 'init' && <WidgetInit />}
       {widgetType === 'issue' && <IssueWidget />}
-      {widgetType === 'pull-request' && <PullRequestWidget />}
+      {widgetType === 'pullRequest' && <PullRequestWidget />}
       {widgetType === 'project' && <ProjectWidget />}
     </Layout>
   );

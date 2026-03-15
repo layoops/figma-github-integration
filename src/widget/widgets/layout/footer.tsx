@@ -1,43 +1,49 @@
 import type { GithubEntity } from '../../shared/lib/types/github';
 
-import { resyncIssue } from '../../features/import/model/resync-issue';
+import { resyncEntity } from '../../features/import';
 import { formatDate } from '../../shared/lib/helpers';
-import { Button, CustomText } from '../../shared/ui/components';
+import { useWidgetTranslation } from '../../shared/lib/hooks';
+import { SYNC_KEYS } from '../../shared/lib/sync-keys';
+import { Button, CustomText } from '../../shared/ui';
 import { IconReload } from '../../shared/ui/icons';
 import { AutoLayout, useSyncedState } from '../../widget-components';
 
-interface FooterProps extends AutoLayoutProps {
+type FooterProps = {
   text?: string;
   githubEntity: GithubEntity;
   onClick?: () => void;
-}
+} & AutoLayoutProps;
 
 export const Footer = ({ githubEntity, ...rest }: FooterProps) => {
-  const [lastSyncDate] = useSyncedState<undefined | string>('lastSynced', undefined);
+  const { t, locale } = useWidgetTranslation();
+  const [lastSyncDate] = useSyncedState<undefined | string>(
+    SYNC_KEYS.widget.lastSyncDate,
+    undefined
+  );
 
   const lastSyncDateText = formatDate({
     value: lastSyncDate,
     type: 'full',
-    locale: 'en-EN',
+    locale,
   });
 
   return (
     <AutoLayout
       padding={{ horizontal: 16, vertical: 12 }}
       width="fill-parent"
-      name={'Reload Wrapper'}
+      name="Footer"
       verticalAlignItems="center"
       {...rest}
     >
       <AutoLayout
         hidden={!lastSyncDateText}
         width="fill-parent"
-        name={'Reload Wrapper'}
+        name="Reload Wrapper"
         verticalAlignItems="center"
         direction="vertical"
         spacing={2}
       >
-        <CustomText size="extra-small">Last Synced:</CustomText>
+        <CustomText size="extra-small">{t('ui.lastSynced')}:</CustomText>
         <CustomText size="extra-small">{lastSyncDateText}</CustomText>
       </AutoLayout>
 
@@ -45,13 +51,13 @@ export const Footer = ({ githubEntity, ...rest }: FooterProps) => {
         name="Sync Button"
         size="small"
         onClick={() =>
-          resyncIssue({
+          resyncEntity({
             githubEntity: githubEntity,
           })
         }
         iconLeft={{ src: IconReload() }}
         appearance="secondary"
-        text="Sync"
+        text={t('ui.syncAction')}
       />
     </AutoLayout>
   );

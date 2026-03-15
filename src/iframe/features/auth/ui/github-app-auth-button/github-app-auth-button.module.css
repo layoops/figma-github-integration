@@ -1,0 +1,6 @@
+.github-app-auth-button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+}

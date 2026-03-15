@@ -1,0 +1,19 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--bgColor-default);
+  color: var(--fgColor-default);
+  font-family: var(--fontStack-sansSerif);
+  max-width: 100dvw;
+}
+
+.layout-content {
+  height: 100%;
+}
+
+.error-banner {
+  margin-inline: 16px;
+  margin-top: 16px;
+}

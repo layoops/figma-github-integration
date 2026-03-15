@@ -1,10 +1,10 @@
 import { useModal } from '../../shared/lib/hooks';
 import { borderRadius, ColorStyles } from '../../shared/styles';
-import { Modal } from '../../shared/ui/components';
+import { Modal } from '../../shared/ui';
 import { AutoLayout } from '../../widget-components';
 import { Header } from './header';
 
-interface LayoutProps extends AutoLayoutProps {}
+type LayoutProps = {} & AutoLayoutProps;
 
 export const Layout = ({ children }: LayoutProps) => {
   const { modal } = useModal();
@@ -13,8 +13,8 @@ export const Layout = ({ children }: LayoutProps) => {
     <AutoLayout
       overflow={modal.openedModal ? 'visible' : 'hidden'}
       name="Layout"
-      verticalAlignItems={'center'}
-      horizontalAlignItems={'center'}
+      verticalAlignItems="center"
+      horizontalAlignItems="center"
       direction="vertical"
       cornerRadius={borderRadius.large}
       fill={ColorStyles.surface.background}
@@ -23,10 +23,10 @@ export const Layout = ({ children }: LayoutProps) => {
     >
       <Header />
       <AutoLayout
-        verticalAlignItems={'center'}
-        horizontalAlignItems={'center'}
+        verticalAlignItems="center"
+        horizontalAlignItems="center"
         direction="vertical"
-        width={'fill-parent'}
+        width="fill-parent"
       >
         {children}
       </AutoLayout>

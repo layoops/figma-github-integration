@@ -1,0 +1,45 @@
+export enum ROUTES {
+  INDEX = 'index',
+  ISSUE = 'issue',
+  REPO = 'repo',
+  REPO_ISSUES = 'repo-issues',
+  REPO_PULL_REQUESTS = 'repo-pull-requests',
+  REPO_PROJECTS = 'repo-projects',
+  ISSUE_CREATE = 'issue-create',
+  PULL_REQUEST = 'pr',
+  PROJECT = 'project',
+  SETTINGS = 'settings',
+  AUTH = 'settings-auth',
+  DOCS = 'docs',
+  RESYNC = 'resync',
+  SEARCH = 'search',
+}
+
+export const ROUTES_MAP = {
+  [ROUTES.INDEX]: '/',
+  [ROUTES.ISSUE]: '/issue/$id',
+  [ROUTES.REPO]: '/repo/$id',
+  [ROUTES.REPO_ISSUES]: '/repo/$id/issues',
+  [ROUTES.REPO_PULL_REQUESTS]: '/repo/$id/pull-requests',
+  [ROUTES.REPO_PROJECTS]: '/repo/$id/projects',
+  [ROUTES.ISSUE_CREATE]: '/issue/create',
+  [ROUTES.PULL_REQUEST]: '/pull-request/$id',
+  [ROUTES.PROJECT]: '/project/$id',
+  [ROUTES.SETTINGS]: '/settings',
+  [ROUTES.AUTH]: '/auth',
+  [ROUTES.DOCS]: '/docs',
+  [ROUTES.RESYNC]: '/resync',
+  [ROUTES.SEARCH]: '/search',
+} as const;
+
+export const routes = {
+  index: () => '/',
+  issue: (id: string | number) => `/issue/${id}`,
+  repo: (id: string | number) => `/repo/${id}`,
+  repoIssues: (id: string | number) => `/repo/${id}/issues`,
+  repoPullRequests: (id: string | number) => `/repo/${id}/pull-requests`,
+  repoProjects: (id: string | number) => `/repo/${id}/projects`,
+  pullRequest: (id: string | number) => `/pull-request/${id}`,
+  project: (id: string | number) => `/project/${id}`,
+  search: () => '/search',
+};

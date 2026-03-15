@@ -3,7 +3,11 @@
     "jsx": "react-jsx",
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -11,16 +15,27 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
-     "baseUrl": ".",
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@/external/*": ["../global-shared/*"],
+      "@/*": [
+        "./*"
+      ],
+      "@/global-shared/*": [
+        "../global-shared/*"
+      ]
     },
-    "types": ["@figma/plugin-typings", "node"]
+    "types": [
+      "@figma/plugin-typings",
+      "node"
+    ]
   }
 }

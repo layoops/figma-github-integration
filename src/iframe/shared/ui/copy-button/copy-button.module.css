@@ -1,0 +1,5 @@
+.copy-button {
+  &.success {
+    color: var(--fgColor-success);
+  }
+}

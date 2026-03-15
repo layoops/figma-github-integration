@@ -1,53 +1,68 @@
-import type { ProjectV2 } from '@octokit/graphql-schema';
+import type { ProjectWidgetData } from '../../global-shared/plugin-messages';
 
-import { type CountContentTypesResult, ProjectContent } from '../entities/project';
-import { formatDate } from '../shared/lib/helpers';
-import { useAppendChild } from '../shared/lib/hooks/use-append-child';
-import { iconStyles } from '../shared/styles';
-import { IssueHeader } from '../shared/ui/components';
-import { IssueHeaderTitle } from '../shared/ui/components/issue-header-title/issue-header-title';
+import { routes } from '../../global-shared/routes-map';
+import { ProjectContent, type ProjectContentCounts } from '../entities/project';
+import { formatDate, openPluginUI } from '../shared/lib/helpers';
+import { useNodeToggleMore, useWidgetTranslation } from '../shared/lib/hooks';
+import { SYNC_KEYS } from '../shared/lib/sync-keys';
+import { iconStyles, palette } from '../shared/styles';
+import { EntityHeader, EntityHeaderTitle } from '../shared/ui';
 import { IconProjects } from '../shared/ui/icons';
 import { AutoLayout, SVG, useSyncedState } from '../widget-components';
 import { ProjectContentPreview } from '../widgets/content-preview';
-import { Footer } from '../widgets/layout/footer';
+import { Footer } from '../widgets/layout';
 
-export interface ProjectWidgetUIState {
+export type ProjectWidgetUIState = {
   more?: boolean;
-}
+};
 
-export interface GithubProject {
-  project: ProjectV2 | null;
-  contentCount?: CountContentTypesResult;
-}
+export type GithubProject = {
+  project: ProjectWidgetData | null;
+  contentCount?: ProjectContentCounts;
+};
 
 export const ProjectWidget = () => {
-  const [githubProject] = useSyncedState<GithubProject>('githubProject', {
+  const { locale } = useWidgetTranslation();
+
+  const [githubProject] = useSyncedState<GithubProject>(SYNC_KEYS.entity.project.content, {
     project: null,
     contentCount: undefined,
   });
 
-  const [openedMore, setOpenedMore] = useSyncedState<boolean>('openedMoreProject', true);
+  const { title, id, shortDescription } = githubProject.project;
 
-  const [lastSyncDate] = useSyncedState<undefined | string>('lastSync', undefined);
+  const [lastSyncDate] = useSyncedState<string | undefined>(
+    SYNC_KEYS.widget.lastSyncDate,
+    undefined
+  );
 
-  const { title, id, shortDescription, url } = githubProject.project;
+  const [isMoreOpen, setIsMoreOpen] = useSyncedState<boolean>(
+    SYNC_KEYS.entity.project.isOpenMore,
+    false
+  );
 
-  const { openMore } = useAppendChild({ setOpenedMore });
+  const { toggleMore } = useNodeToggleMore({ setIsToggled: setIsMoreOpen });
 
   return (
     <AutoLayout
-      verticalAlignItems={'center'}
-      horizontalAlignItems={'center'}
+      verticalAlignItems="center"
+      horizontalAlignItems="center"
       direction="vertical"
-      width={'fill-parent'}
+      width="fill-parent"
     >
-      <IssueHeader
+      <EntityHeader
         title={
-          <IssueHeaderTitle
-            href={url}
+          <EntityHeaderTitle
+            onClick={() => {
+              openPluginUI({
+                routeName: routes.project(id),
+                props: {},
+                options: { visible: true },
+              });
+            }}
             preLinkChildren={
               <SVG
-                src={IconProjects('#57606A')}
+                src={IconProjects(palette.fgColorMuted)}
                 width={iconStyles.sizing.small}
                 height={iconStyles.sizing.small}
               />
@@ -58,25 +73,21 @@ export const ProjectWidget = () => {
         contentPreview={
           <ProjectContentPreview hidden={!shortDescription} shortDescription={shortDescription} />
         }
-        openedMore={openedMore}
-        onClick={openMore}
+        openedMore={isMoreOpen}
+        onOpenMoreButtonClick={toggleMore}
       />
-      <ProjectContent
-        project={githubProject.project}
-        contentCount={githubProject.contentCount}
-        hidden={!openedMore}
-      />
+      <ProjectContent project={githubProject.project} hidden={!isMoreOpen} />
 
       <Footer
         githubEntity={{
           entityType: 'project',
           entity: { id: id, title: title },
         }}
-        hidden={!openedMore}
+        hidden={!isMoreOpen}
         text={formatDate({
           value: lastSyncDate,
           type: 'full',
-          locale: 'en-EN',
+          locale,
         })}
       />
     </AutoLayout>

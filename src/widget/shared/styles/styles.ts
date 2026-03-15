@@ -1,32 +1,33 @@
-import { Colors } from './colors';
+import { palette } from './palette';
 
 type Sizing = 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large';
 
 export const ColorStyles = {
   surface: {
-    background: Colors.white,
+    background: palette.white,
+    muted: '#F6F8FA',
   },
   border: '#e8ebef',
   validation: {
     default: {
-      text: Colors.black,
-      bg: Colors.white,
+      text: palette.black,
+      bg: palette.white,
     },
     inverted: {
-      text: Colors.white,
-      bg: Colors.black,
+      text: palette.white,
+      bg: palette.black,
     },
     error: {
-      text: Colors.red[500],
-      bg: Colors.red[50],
+      text: palette.red[500],
+      bg: palette.red[50],
     },
     warning: {
-      text: Colors.orange[500],
-      bg: Colors.orange[50],
+      text: palette.orange[500],
+      bg: palette.orange[50],
     },
     disabled: {
-      text: Colors.gray[600],
-      bg: Colors.gray[100],
+      text: palette.gray[600],
+      bg: palette.gray[100],
     },
   },
 };

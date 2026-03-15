@@ -1,78 +1,87 @@
 import type { PullRequest } from '@octokit/graphql-schema';
 
-import { PullRequestContent } from '../entities/pull-request/ui/pull-request-content';
-import { useAppendChild } from '../shared/lib/hooks/use-append-child';
+import { routes } from '../../global-shared/routes-map';
+import { PullRequestContent } from '../entities/pull-request';
+import { openPluginUI } from '../shared/lib/helpers';
+import { useNodeToggleMore } from '../shared/lib/hooks';
+import { SYNC_KEYS } from '../shared/lib/sync-keys';
 import { ColorStyles } from '../shared/styles';
-import { CustomText, IssueHeader } from '../shared/ui/components';
-import { IssueHeaderTitle } from '../shared/ui/components/issue-header-title/issue-header-title';
-import { IssueStateLabel } from '../shared/ui/components/issue-state-label/issue-state-label';
+import { EntityHeader, EntityHeaderTitle, EntityStateLabel } from '../shared/ui';
 import { AutoLayout, Line, useSyncedState } from '../widget-components';
-import { Footer } from '../widgets/layout/footer';
+import { PullRequestContentPreview } from '../widgets/content-preview/ui';
+import { Footer } from '../widgets/layout';
+
 type PullRequestWidgetProps = {
   pullRequest?: PullRequest;
 };
-export const PullRequestWidget = (props: PullRequestWidgetProps) => {
+
+export const PullRequestWidget = ({ pullRequest: passedPullRequest }: PullRequestWidgetProps) => {
   const [pullRequest] = useSyncedState<PullRequest | null>(
-    'pullRequest',
-    () => props.pullRequest ?? null
+    SYNC_KEYS.entity.pullRequest.content,
+    () => passedPullRequest ?? null
   );
 
   const { id, title } = pullRequest;
 
-  const [openedMore, setOpenedMore] = useSyncedState<boolean>('openedMore', false);
+  const linkText = `${pullRequest.repository.owner.login}/${pullRequest.repository.name}#${pullRequest.number}`;
 
-  const { openMore } = useAppendChild({ setOpenedMore });
+  const [isMoreOpen, setIsMoreOpen] = useSyncedState<boolean>(
+    SYNC_KEYS.entity.pullRequest.isOpenMore,
+    false
+  );
+
+  const { toggleMore } = useNodeToggleMore({ setIsToggled: setIsMoreOpen });
 
   return (
     <AutoLayout
-      verticalAlignItems={'center'}
-      horizontalAlignItems={'center'}
+      verticalAlignItems="center"
+      horizontalAlignItems="center"
       direction="vertical"
-      width={'fill-parent'}
+      width="fill-parent"
     >
       {title ? (
-        <IssueHeader
+        <EntityHeader
           title={
-            <IssueHeaderTitle
-              href={pullRequest?.url}
+            <EntityHeaderTitle
+              onClick={() => {
+                openPluginUI({
+                  routeName: routes.pullRequest(id),
+                  props: {},
+                  options: { visible: true },
+                });
+              }}
               preLinkChildren={
-                <IssueStateLabel type={'PullRequest'} state={pullRequest.state ?? 'DRAFT'} />
+                <EntityStateLabel
+                  target="pullRequest"
+                  iconOnly={linkText ? true : false}
+                  state={pullRequest.state}
+                />
               }
-              text={`${pullRequest.repository.owner.login}/${pullRequest.repository.name}#${pullRequest.number}`}
+              text={linkText}
             />
           }
           contentPreview={
-            <AutoLayout
-              direction="vertical"
-              verticalAlignItems={'center'}
-              spacing={12}
-              width="fill-parent"
-            >
-              <CustomText width={'hug-contents'} size="medium">
-                {title}
-              </CustomText>
-            </AutoLayout>
+            <PullRequestContentPreview
+              githubEntity={{
+                entityType: 'pullRequest',
+                entity: { id: id, title: title },
+              }}
+              openedMore={isMoreOpen}
+              pullRequest={pullRequest}
+            />
           }
-          onClick={openMore}
-          openedMore={openedMore}
-          disabled={!pullRequest.bodyText}
+          onOpenMoreButtonClick={toggleMore}
+          openedMore={isMoreOpen}
         />
       ) : null}
-
-      <PullRequestContent pullRequest={pullRequest} hidden={!openedMore} />
-
-      <Line
-        hidden={!openedMore}
-        stroke={ColorStyles.border}
-        strokeWidth={1}
-        length={'fill-parent'}
-      />
+      <PullRequestContent pullRequest={pullRequest} hidden={!isMoreOpen} />
+      <Line hidden={!isMoreOpen} stroke={ColorStyles.border} strokeWidth={1} length="fill-parent" />
       <Footer
         githubEntity={{
-          entityType: 'pull-request',
+          entityType: 'pullRequest',
           entity: { id: id, title: title },
         }}
-        hidden={!openedMore}
+        hidden={!isMoreOpen}
       />
     </AutoLayout>
   );

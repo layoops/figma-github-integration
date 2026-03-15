@@ -1,1 +1,1 @@
-export * from './api';
+export { useGitHubViewer, getViewer } from './get-viewer';
