@@ -1,43 +1,60 @@
+import type { WidgetTheme } from '../shared/styles/themes';
 import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
-import { IssueContent } from '../entities/issue/ui/issue-content';
-import { useAppendChild } from '../shared/lib/hooks/use-append-child';
-import { ColorStyles } from '../shared/styles';
-import { IssueHeader, IssueStateLabel } from '../shared/ui/components';
-import { IssueHeaderTitle } from '../shared/ui/components/issue-header-title/issue-header-title';
+import { routes } from '../../global-shared/routes-map';
+import { IssueContent } from '../entities/issue/ui';
+import { openPluginUI } from '../shared/lib/helpers';
+import { useNodeToggleMore } from '../shared/lib/hooks';
+import { SYNC_KEYS } from '../shared/lib/sync-keys';
+import { getColorStyles } from '../shared/styles';
+import { EntityHeader, EntityHeaderTitle, EntityStateLabel } from '../shared/ui';
 import { AutoLayout, Line, useSyncedState } from '../widget-components';
 import { IssueContentPreview } from '../widgets/content-preview';
-import { Footer } from '../widgets/layout/footer';
+import { Footer } from '../widgets/layout';
 
 export const IssueWidget = () => {
-  const [githubIssue] = useSyncedState<Issue | DraftIssue | null>('githubIssue', null);
+  const [githubIssue] = useSyncedState<Issue | DraftIssue | null>(
+    SYNC_KEYS.entity.issue.content,
+    null
+  );
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
 
   const { __typename, id, title } = githubIssue;
 
-  const [openedMore, setOpenedMore] = useSyncedState<boolean>('openedMoreIssue', false);
+  const [isMoreOpen, setIsMoreOpen] = useSyncedState<boolean>(
+    SYNC_KEYS.entity.issue.isOpenMore,
+    false
+  );
 
-  const { openMore } = useAppendChild({ setOpenedMore });
+  const { toggleMore: toggleMore } = useNodeToggleMore({ setIsToggled: setIsMoreOpen });
 
   const linkText =
     githubIssue.__typename === 'Issue'
       ? `${githubIssue.repository.owner.login}/${githubIssue.repository.name}#${githubIssue.number}`
-      : undefined;
+      : title;
 
   return (
     <AutoLayout
-      verticalAlignItems={'center'}
-      horizontalAlignItems={'center'}
+      verticalAlignItems="center"
+      horizontalAlignItems="center"
       direction="vertical"
-      width={'fill-parent'}
+      width="fill-parent"
     >
       {title ? (
-        <IssueHeader
+        <EntityHeader
           title={
-            <IssueHeaderTitle
-              href={githubIssue.__typename === 'Issue' ? githubIssue?.url : ''}
+            <EntityHeaderTitle
+              onClick={() => {
+                openPluginUI({
+                  routeName: routes.issue(id),
+                  props: {},
+                  options: { visible: true },
+                });
+              }}
               preLinkChildren={
-                <IssueStateLabel
-                  type={'Issue'}
+                <EntityStateLabel
+                  target="issue"
                   iconOnly={linkText ? true : false}
                   state={__typename === 'Issue' ? githubIssue.state : 'DRAFT'}
                 />
@@ -51,27 +68,22 @@ export const IssueWidget = () => {
                 entityType: 'issue',
                 entity: { id: id, title: title },
               }}
-              openedMore={openedMore}
+              openedMore={isMoreOpen}
               issue={githubIssue}
             />
           }
-          onClick={openMore}
-          openedMore={openedMore}
+          onOpenMoreButtonClick={toggleMore}
+          openedMore={isMoreOpen}
         />
       ) : null}
-      <IssueContent issue={githubIssue} hidden={!openedMore} />
-      <Line
-        hidden={!openedMore}
-        stroke={ColorStyles.border}
-        strokeWidth={1}
-        length={'fill-parent'}
-      />
+      <IssueContent entity={githubIssue} hidden={!isMoreOpen} />
+      <Line hidden={!isMoreOpen} stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />
       <Footer
         githubEntity={{
           entityType: 'issue',
           entity: { id: id, title: title },
         }}
-        hidden={!openedMore}
+        hidden={!isMoreOpen}
       />
     </AutoLayout>
   );

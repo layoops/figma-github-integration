@@ -1,57 +1,73 @@
 import type { GithubEntity } from '../../shared/lib/types/github';
+import type { WidgetTheme } from '../../shared/styles/themes';
 
-import { resyncIssue } from '../../features/import/model/resync-issue';
+import { resyncEntity } from '../../features/import';
 import { formatDate } from '../../shared/lib/helpers';
-import { Button, CustomText } from '../../shared/ui/components';
+import { useWidgetTranslation } from '../../shared/lib/hooks';
+import { SYNC_KEYS } from '../../shared/lib/sync-keys';
+import { getColorStyles } from '../../shared/styles';
+import { Button, CustomText } from '../../shared/ui';
 import { IconReload } from '../../shared/ui/icons';
 import { AutoLayout, useSyncedState } from '../../widget-components';
 
-interface FooterProps extends AutoLayoutProps {
+type FooterProps = {
   text?: string;
   githubEntity: GithubEntity;
   onClick?: () => void;
-}
+} & AutoLayoutProps;
 
 export const Footer = ({ githubEntity, ...rest }: FooterProps) => {
-  const [lastSyncDate] = useSyncedState<undefined | string>('lastSynced', undefined);
+  const { t, locale } = useWidgetTranslation();
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
+  const [lastSyncDate] = useSyncedState<undefined | string>(
+    SYNC_KEYS.widget.lastSyncDate,
+    undefined
+  );
 
   const lastSyncDateText = formatDate({
     value: lastSyncDate,
     type: 'full',
-    locale: 'en-EN',
+    locale,
   });
 
   return (
     <AutoLayout
       padding={{ horizontal: 16, vertical: 12 }}
       width="fill-parent"
-      name={'Reload Wrapper'}
+      name="Footer"
       verticalAlignItems="center"
       {...rest}
     >
       <AutoLayout
         hidden={!lastSyncDateText}
         width="fill-parent"
-        name={'Reload Wrapper'}
+        name="Reload Wrapper"
         verticalAlignItems="center"
         direction="vertical"
         spacing={2}
       >
-        <CustomText size="extra-small">Last Synced:</CustomText>
-        <CustomText size="extra-small">{lastSyncDateText}</CustomText>
+        <CustomText fill={colorStyles.fg.muted} size="extra-small">
+          {t('ui.lastSynced')}:
+        </CustomText>
+        <CustomText fill={colorStyles.fg.muted} size="extra-small">
+          {lastSyncDateText}
+        </CustomText>
       </AutoLayout>
 
       <Button
         name="Sync Button"
         size="small"
         onClick={() =>
-          resyncIssue({
+          resyncEntity({
             githubEntity: githubEntity,
           })
         }
-        iconLeft={{ src: IconReload() }}
+        iconLeft={{ src: IconReload(colorStyles.button.secondary.text) }}
         appearance="secondary"
-        text="Sync"
+        text={t('ui.syncAction')}
+        widgetTheme={widgetTheme}
       />
     </AutoLayout>
   );
