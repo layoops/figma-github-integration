@@ -1,7 +1,8 @@
+# Figma GitHub Integration
+
 Figma GitHub Integration is a widget designed to integrate Figma with GitHub for project management in a modern way. This widget allows users to import issues, pull requests, and the entire project directly from GitHub to Figma. Also, users can create an issue from Figma.
 
 The widget content is easily configurable, allowing users to customize their interaction with the widget according to their needs.
-
 
 You can:
 

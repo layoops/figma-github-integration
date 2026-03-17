@@ -1,12 +1,12 @@
 name: 🐛 Bug report
 description: Create a bug report to help us improve the Figma Github Integration Widget
-title : "[Bug]: "
+title: '[Bug]: '
 labels:
- - bug
+  - bug
 projects:
- - layooops/3
+  - layoops/3
 assignees:
- - vitaliiastakhov
+  - vitaliiastakhov
 body:
   - type: input
     id: contact

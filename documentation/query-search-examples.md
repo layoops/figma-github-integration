@@ -8,7 +8,7 @@ repo:<repository> type:<issue_type> state:<issue_state> sort:<sort_order>
 
 ### Usefull search parameters:
 
-- `repo`: The repository name, e.g., "layooops/figma-github-integration".
+- `repo`: The repository name, e.g., "layoops/figma-github-integration".
 - `type`: The type of issue ("issue") or pull request ("pr").
 - `state`: The state of the issue/PR ("open", "closed", etc.).
 - `sort`: Sorting order for results ("created-asc", "created-desc", "updated-asc", "updated-desc", etc.).

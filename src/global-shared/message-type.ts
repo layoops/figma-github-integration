@@ -1,10 +1,14 @@
 export enum MESSAGE_TYPES {
-  ROUTE_UPDATE = 'route-update',
+  SET_ROUTE = 'set-route',
   GET_GITHUB_AUTH_TOKEN = 'get-github-auth-token',
   GET_GITHUB_AUTH_TOKEN_RESPONSE = 'get-github-auth-token-response',
   IMPORT_GITHUB_ISSUE = 'import-github-issue',
   IMPORT_GITHUB_PROJECT_ISSUE = 'import-github-project-issue',
   IMPORT_GITHUB_QUERY_ISSUE = 'import-github-query-issue',
+  IMPORT_GITHUB_ISSUES = 'import-github-issues',
+  SET_LOCALE = 'set-locale',
+  GET_LOCALE = 'get-locale',
+  GET_LOCALE_RESPONSE = 'get-locale-response',
   IMPORT_GITHUB_PROJECT = 'import-github-project',
   IMPORT_GITHUB_PULL_REQUEST = 'import-github-pull-request',
   CLOSE_PLUGIN = 'close-plugin',
@@ -13,4 +17,6 @@ export enum MESSAGE_TYPES {
   RESYNC_GITHUB_ISSUE_RESPONSE = 'resync-github-issue-response',
   SEND_GITHUB_SETTINGS = 'send-github-settings',
   RESYNC_ERROR = 'resync-error',
+  OPEN_URL = 'open-url',
+  INSERT_TO_FIGMA_STATUS = 'insert-to-figma-status',
 }

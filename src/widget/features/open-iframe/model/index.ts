@@ -1,1 +1,5 @@
-export * from './open-iframe';
+export {
+  openPluginIndexPage,
+  openPluginCreateIssuePage,
+  openPluginSettingsPage,
+} from './open-iframe';

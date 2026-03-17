@@ -1,2 +1,2 @@
-export * from './github';
-export * from './style-types';
+export type { GithubId, GithubEntity } from './github';
+export type { ApplicationSettings, ContentSettings, Theme } from './application-settings';
