@@ -1,1 +1,6 @@
-export * from './api';
+export {
+  getGithubEntityQueryKey,
+  resolveGithubEntityFromUrl,
+  useGithubEntityFromUrl,
+  parseGithubUrl,
+} from './api';
