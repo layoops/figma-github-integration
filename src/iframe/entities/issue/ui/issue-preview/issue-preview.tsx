@@ -5,14 +5,13 @@ import {
   ActionList,
   Avatar,
   AvatarStack,
-  Button,
   IssueLabelToken,
   LabelGroup,
   Link,
   Stack,
   Text,
 } from '@primer/react';
-import { createLink, Link as RouterLink } from '@tanstack/react-router';
+import { createLink } from '@tanstack/react-router';
 
 import { ROUTES, ROUTES_MAP } from '@/global-shared/routes-map';
 import { useTranslation } from '@/shared/lib/contexts';
@@ -78,11 +77,6 @@ export const IssuePreview = ({ issue }: IssuePreviewProps) => {
       }
       entityId={issue.id}
       bodyHTML={issue.bodyHTML}
-      headerActions={
-        <Button as={RouterLink} to={ROUTES_MAP[ROUTES.ISSUE_CREATE]} size="small" variant="primary">
-          {t('links.newIssue.title')}
-        </Button>
-      }
       topMetadata={
         <>
           {Boolean(issue?.assignees?.nodes && issue.assignees?.nodes.length) && (

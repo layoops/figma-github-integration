@@ -23,7 +23,10 @@ export const AuthPage = () => {
 
   return (
     <PageContentLayout title={t('authorizationPage.title')}>
-      <GithubAppAuthButton onTokenReceived={handleToken} isDisabled={isVerifying} />
+      <GithubAppAuthButton
+        onTokenReceived={(token) => handleToken(token, 'oauth')}
+        isDisabled={isVerifying}
+      />
       <AccessTokenForm onTokenSubmit={handleToken} isLoading={isVerifying} error={error} />
       {error && (
         <Flash variant="danger">

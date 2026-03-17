@@ -1,5 +1,6 @@
-import { type FormHTMLAttributes, type ReactNode } from 'react';
+import { type FormHTMLAttributes, type ReactNode, type Ref } from 'react';
 import { FormControl } from '@primer/react';
+import { useStore } from '@tanstack/react-form';
 
 import { useTranslation } from '@/shared/lib/contexts';
 import { getFirstError } from '@/shared/lib/forms/validation';
@@ -12,12 +13,14 @@ import classes from './search-entity-form.module.css';
 export type SearchEntityFormProps = {
   size?: SearchInputWithButtonProps['size'];
   children?: ReactNode;
+  ref?: Ref<HTMLDivElement>;
 } & Omit<FormHTMLAttributes<HTMLFormElement>, 'children'>;
 
-export const SearchEntityForm = ({ size, children, ...props }: SearchEntityFormProps) => {
+export const SearchEntityForm = ({ size, children, ref, ...props }: SearchEntityFormProps) => {
   const { t } = useTranslation();
 
   const form = useFormContext();
+  const isLoading = useStore(form.store, (state) => state.isSubmitting && state.isValid);
 
   return (
     <Form {...props} onAction={form.handleSubmit}>
@@ -38,7 +41,8 @@ export const SearchEntityForm = ({ size, children, ...props }: SearchEntityFormP
                   value={field.state.value}
                   onChange={field.handleChange as never}
                   onBlur={field.handleBlur}
-                  loading={field.form.state.isSubmitting && field.form.state.isFormValid}
+                  loading={isLoading}
+                  ref={ref}
                 />
                 {children}
               </div>

@@ -1,10 +1,11 @@
+import type { WidgetTheme } from '../../../shared/styles/themes';
 import type { EntityTabConfig } from '../../../shared/ui/entity-tabs';
 import type { PullRequest } from '@octokit/graphql-schema';
 
 import { formatDate } from '../../../shared/lib/helpers';
 import { useWidgetTranslation } from '../../../shared/lib/hooks';
 import { SYNC_KEYS } from '../../../shared/lib/sync-keys';
-import { palette } from '../../../shared/styles';
+import { getColorStyles } from '../../../shared/styles';
 import {
   EntityCommentsSection,
   EntityContentLayout,
@@ -32,6 +33,8 @@ const PULL_REQUEST_TABS = [
 
 export const PullRequestContent = ({ pullRequest, ...rest }: PullRequestContentProps) => {
   const { t, locale } = useWidgetTranslation();
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
 
   const [selectedTab, setSelectedTab] = useSyncedState<PullRequestTab>(
     SYNC_KEYS.entity.pullRequest.selectedContentTab,
@@ -60,7 +63,7 @@ export const PullRequestContent = ({ pullRequest, ...rest }: PullRequestContentP
               text: formatDate({ value: pullRequest?.updatedAt, locale }),
               icon: {
                 url: pullRequest.url,
-                src: IconExternal(palette.black),
+                src: IconExternal(colorStyles.fg.default),
               },
             },
           }}

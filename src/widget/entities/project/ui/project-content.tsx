@@ -1,5 +1,6 @@
 import type { ProjectWidgetData } from '../../../../global-shared/plugin-messages';
 import type { GithubEntity } from '../../../shared/lib/types/github';
+import type { WidgetTheme } from '../../../shared/styles';
 import type { LinkedEntityRef } from '../hooks/use-insert-github-project-to-figma';
 
 import { routes } from '../../../../global-shared/routes-map';
@@ -53,6 +54,7 @@ export const openPluginProjectUI = (props: { githubEntity: GithubEntity }) => {
 export const ProjectContent = ({ project, ...rest }: ProjectContentProps) => {
   const { t } = useWidgetTranslation();
 
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
   const [selectedTab, setSelectedTab] = useSyncedState<ProjectTab>(
     SYNC_KEYS.entity.project.selectedContentTab,
     'overview'
@@ -125,6 +127,7 @@ export const ProjectContent = ({ project, ...rest }: ProjectContentProps) => {
                                 openEntityPluginUI({ id: ref.id, __typename: ref.__typename });
                               }}
                               text={ref.title}
+                              widgetTheme={widgetTheme}
                             />
                           ))}
                         </IssueContentBlock>

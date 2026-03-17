@@ -16,7 +16,6 @@ import { settingsRoute } from '@/pages/settings-page';
 import { queryClient } from '@/shared/lib/react-query';
 import { rootRoute } from '@/shared/routing/root-route';
 import { baseLayoutRoute } from '@/widgets/layout';
-import { ProtectedLayout } from '@/widgets/protected-layout';
 import { repoLayoutRoute } from '@/widgets/repo-layout';
 
 export const memoryHistory = createMemoryHistory({ initialEntries: ['/'] });
@@ -24,7 +23,6 @@ export const memoryHistory = createMemoryHistory({ initialEntries: ['/'] });
 export const protectedRoute = createRoute({
   getParentRoute: () => baseLayoutRoute,
   id: 'protected',
-  component: ProtectedLayout,
 });
 
 const routeTree = rootRoute.addChildren([

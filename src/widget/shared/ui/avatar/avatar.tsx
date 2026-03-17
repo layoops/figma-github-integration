@@ -1,7 +1,9 @@
 import type { CommonSizes } from '../../styles';
+import type { WidgetTheme } from '../../styles/themes';
 
-import { AutoLayout, Image } from '../../../widget-components';
-import { ColorStyles } from '../../styles';
+import { AutoLayout, Image, useSyncedState } from '../../../widget-components';
+import { SYNC_KEYS } from '../../lib/sync-keys';
+import { getColorStyles } from '../../styles';
 import { CustomText } from '../custom-text';
 
 export type AvatarProps = {
@@ -21,6 +23,9 @@ export const Avatar = ({
   href = '',
   ...rest
 }: AvatarProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
   return (
     <AutoLayout
       name={name}
@@ -31,7 +36,7 @@ export const Avatar = ({
     >
       {avatarUrl && (
         <Image
-          stroke={ColorStyles.border}
+          stroke={colorStyles.border}
           name="Avatar Image"
           cornerRadius={100}
           width={20}
@@ -40,7 +45,13 @@ export const Avatar = ({
         />
       )}
       {text && (
-        <CustomText href={href} size={size} hidden={textIsHidden} fontWeight={600}>
+        <CustomText
+          href={href}
+          size={size}
+          hidden={textIsHidden}
+          fontWeight={600}
+          fill={colorStyles.fg.default}
+        >
           {text}
         </CustomText>
       )}

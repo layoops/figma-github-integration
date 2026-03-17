@@ -5,6 +5,7 @@ export {
   EntityPreviewTitle,
   type EntityPreviewTitleProps,
 } from './entity-preview';
+export { EntityStateLabel, type EntityStateLabelProps } from './entity-state-label';
 export { EmptyTableRow, EntityTable } from './entity-table';
 export { CheckboxField } from './fields';
 export { Form } from './form';
@@ -16,4 +17,4 @@ export {
 export { HTMLBody } from './html-body';
 export { Loader } from './loader';
 export { SearchInputWithButton, type SearchInputWithButtonProps } from './search-input-with-button';
-export { EntityStateLabel, type EntityStateLabelProps } from './entity-state-label';
+export { StickyUnderlineNav } from './sticky-underline-nav';

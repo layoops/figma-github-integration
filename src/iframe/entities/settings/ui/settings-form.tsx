@@ -40,9 +40,11 @@ export const SettingsForm = () => {
     defaultValues: {
       locale: applicationSettings?.locale ?? locale ?? 'en',
       theme: applicationSettings?.theme ?? 'auto',
+      widgetTheme: applicationSettings?.widgetTheme ?? 'light',
       issue: applicationSettings?.issue ?? contentDefaults,
       pullRequest: applicationSettings?.pullRequest ?? contentDefaults,
       project: applicationSettings?.project ?? projectDefaultFormData,
+      defaultTargetUrl: applicationSettings?.defaultTargetUrl ?? '',
     },
     onSubmit: async ({ value }) => {
       setApplicationSettings(value);
@@ -104,6 +106,26 @@ export const SettingsForm = () => {
         )}
       </form.Field>
 
+      <form.Field name="widgetTheme">
+        {(field) => (
+          <FormControl>
+            <FormControl.Label>{t('settingsForm.widgetTheme.label')}</FormControl.Label>
+            <Select
+              block
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value as any)}
+            >
+              <Select.Option value="light">
+                {t('settingsForm.widgetTheme.values.light')}
+              </Select.Option>
+              <Select.Option value="dark">
+                {t('settingsForm.widgetTheme.values.dark')}
+              </Select.Option>
+            </Select>
+          </FormControl>
+        )}
+      </form.Field>
+
       <CheckboxGroup>
         <CheckboxGroup.Label>{t('settingsForm.issue.label')}</CheckboxGroup.Label>
         {renderContentSection('issue')}
@@ -134,6 +156,21 @@ export const SettingsForm = () => {
           )}
         </form.Field>
       </div>
+
+      <form.Field name="defaultTargetUrl">
+        {(field) => (
+          <FormControl>
+            <FormControl.Label>{t('settingsForm.defaultTargetUrl.label')}</FormControl.Label>
+            <TextInput
+              block
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder={t('settingsForm.defaultTargetUrl.placeholder')}
+            />
+            <FormControl.Caption>{t('settingsForm.defaultTargetUrl.caption')}</FormControl.Caption>
+          </FormControl>
+        )}
+      </form.Field>
     </Form>
   );
 };

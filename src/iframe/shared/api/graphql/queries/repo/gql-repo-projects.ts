@@ -11,6 +11,8 @@ query RepoProjects($id: ID!, $first: Int = 100) {
                     url
                     public
                     number
+                    createdAt
+                    updatedAt
                 }
             }
         }

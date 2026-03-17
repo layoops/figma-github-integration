@@ -23,6 +23,12 @@ export const iframeEn: IframeLocalizationKeys = {
       backButton: {
         tooltipText: 'Go back',
       },
+      forwardButton: {
+        tooltipText: 'Go forward',
+      },
+      refreshButton: {
+        tooltipText: 'Refresh page',
+      },
     },
     menu: {
       anchorButton: {
@@ -61,6 +67,13 @@ export const iframeEn: IframeLocalizationKeys = {
         light: 'Light',
       },
     },
+    widgetTheme: {
+      label: 'Widget Theme',
+      values: {
+        light: 'Light',
+        dark: 'Dark',
+      },
+    },
     issue: {
       label: 'Issue content',
       fields: {
@@ -92,6 +105,11 @@ export const iframeEn: IframeLocalizationKeys = {
         customFieldCaption:
           'Name of the GitHub Project field used to display item status (e.g. "Status").',
       },
+    },
+    defaultTargetUrl: {
+      label: 'Default target URL',
+      caption: 'Pre-fills the target field when creating a new issue (repository or project URL).',
+      placeholder: 'https://github.com/owner/repo',
     },
     submitButton: 'Save Settings',
   },
@@ -154,6 +172,9 @@ export const iframeEn: IframeLocalizationKeys = {
       import: {
         title: 'Import',
       },
+      importWithProject: {
+        title: 'Also import project',
+      },
     },
   },
 
@@ -214,6 +235,10 @@ export const iframeEn: IframeLocalizationKeys = {
         title: 'Widget',
         body: 'Each imported item becomes a widget on the Figma canvas. Widgets show four tabs: Overview (title, status, metadata), Body (description), Comments, and Relatives (linked issues or PRs). Use the Sync button to refresh with the latest data from GitHub.',
       },
+      keyboardShortcuts: {
+        title: 'Keyboard Shortcuts',
+        body: 'Cmd+← / Ctrl+← — Go back\nCmd+→ / Ctrl+→ — Go forward\n/ — Focus search',
+      },
     },
   },
 
@@ -223,9 +248,11 @@ export const iframeEn: IframeLocalizationKeys = {
     tokenVerifyError: 'Failed to verify token',
     loginWithGitHub: 'Log in with GitHub',
     connectingToGitHub: 'Connecting to GitHub...',
+    waitingForAuthorization: 'Waiting for authorization...',
+    cancelAuthorization: 'Cancel',
     form: {
       tokenErrorTitle: 'Token Error',
-      saveManualToken: 'Save Manual Token',
+      addManualToken: 'Add Manual Token',
       showToken: 'Show',
       hideToken: 'Hide',
       generateToken: 'Generate Personal Access Token',

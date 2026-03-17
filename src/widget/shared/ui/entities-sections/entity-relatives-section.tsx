@@ -1,3 +1,4 @@
+import type { WidgetTheme } from '../../styles';
 import type {
   IssueTimelineItems,
   Milestone,
@@ -5,9 +6,10 @@ import type {
   PullRequestTimelineItems,
 } from '@octokit/graphql-schema';
 
-import { AutoLayout } from '../../../widget-components';
+import { AutoLayout, useSyncedState } from '../../../widget-components';
 import { formatDate } from '../../lib/helpers';
 import { useOpenEntityPluginUI, useWidgetTranslation } from '../../lib/hooks';
+import { SYNC_KEYS } from '../../lib/sync-keys';
 import { Button } from '../buttons';
 import { CustomText } from '../custom-text';
 import { EntityStateLabel } from '../entity-state-label';
@@ -27,6 +29,7 @@ export const EntityRelativesSection = ({
   hidden,
   ...rest
 }: EntityRelativesSectionProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
   const { t, locale } = useWidgetTranslation();
 
   const openEntityPluginUI = useOpenEntityPluginUI();
@@ -81,6 +84,7 @@ export const EntityRelativesSection = ({
                                 }}
                                 size="extra-small"
                                 text={item.subject.title}
+                                widgetTheme={widgetTheme}
                               />
                             )
                           );
@@ -117,6 +121,7 @@ export const EntityRelativesSection = ({
                             });
                           }}
                           text={projectItem.project.title}
+                          widgetTheme={widgetTheme}
                         />
                       ))}
                     </IssueContentBlock>

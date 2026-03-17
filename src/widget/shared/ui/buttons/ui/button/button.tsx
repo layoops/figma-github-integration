@@ -1,12 +1,20 @@
 import type { CommonSizes } from '../../../../styles/common';
+import type { WidgetTheme } from '../../../../styles/themes';
 import type { ButtonAppearance, ButtonState } from '../../types';
 
 import { AutoLayout, SVG } from '../../../../../widget-components';
 import { getAppropriateTextColor } from '../../../../lib/color-utils';
-import { borderRadius, iconStyles, palette, spacingStyles, TextStyles } from '../../../../styles';
+import {
+  borderRadius,
+  getColorStyles,
+  iconStyles,
+  palette,
+  spacingStyles,
+  TextStyles,
+} from '../../../../styles';
 import { commonSizings } from '../../../../styles/common';
 import { CustomText } from '../../../custom-text';
-import { buttonStyles } from '../../styles/button-styles';
+import { getButtonStyles } from '../../styles/button-styles';
 
 const buttonFontSize: Record<CommonSizes, number> = {
   'extra-small': TextStyles['extra-small'].size,
@@ -34,6 +42,7 @@ export type ButtonProps = {
   color?: string;
   textColor?: string;
   textAlign?: TextProps['horizontalAlignText'];
+  widgetTheme?: WidgetTheme;
 } & AutoLayoutProps &
   Pick<TextProps, 'fontWeight'>;
 
@@ -55,10 +64,14 @@ export const Button = (props: ButtonProps) => {
     iconRight,
     fill,
     textAlign = 'center',
+    widgetTheme = 'light',
     ...rest
   } = props;
 
-  const defaultTextColor = buttonStyles[appearance].default.text ?? palette.gray[900];
+  const colorStyles = getColorStyles(widgetTheme);
+  const buttonStyles = getButtonStyles(widgetTheme);
+
+  const defaultTextColor = buttonStyles[appearance].default.text ?? colorStyles.fg.default;
 
   const backgroundColor = fill ?? buttonStyles[appearance][state]?.bg;
 
@@ -79,7 +92,7 @@ export const Button = (props: ButtonProps) => {
         darkTextColor: palette.gray[900],
       });
     } else {
-      textColor = palette.gray[900];
+      textColor = colorStyles.fg.default;
     }
   }
 

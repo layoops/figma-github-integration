@@ -1,7 +1,9 @@
+import type { WidgetTheme } from '../../styles/themes';
 import type { IssueState, PullRequestState } from '@octokit/graphql-schema';
 
-import { AutoLayout, SVG } from '../../../widget-components';
-import { iconStyles, palette } from '../../styles';
+import { AutoLayout, SVG, useSyncedState } from '../../../widget-components';
+import { SYNC_KEYS } from '../../lib/sync-keys';
+import { getColorStyles, iconStyles } from '../../styles';
 import { CustomText } from '../custom-text';
 import {
   GitPullRequestClosedIcon,
@@ -16,26 +18,13 @@ type StateLabelIconProps = {
   state: IssueState | PullRequestState | 'DRAFT';
   icon: SVGProps;
   text?: string;
+  textColor?: string;
 } & AutoLayoutProps;
 
 export type EntityStateLabelProps = {
   state: IssueState | PullRequestState | 'DRAFT';
   target: 'issue' | 'pullRequest';
   iconOnly?: boolean;
-};
-
-const IssueStateColors = {
-  DRAFT: palette.fgColorNeutral,
-  OPEN: palette.fgColorOpen,
-  CLOSE: palette.fgColorDone,
-};
-
-const PullRequestStateColors = {
-  DRAFT: palette.fgColorNeutral,
-  OPEN: palette.fgColorOpen,
-  CLOSE: palette.fgColorDanger,
-  MERGED: palette.fgColorDone,
-  QUEUED: palette.fgColorAttention,
 };
 
 const getGithubIssueState = ({
@@ -49,22 +38,22 @@ const getGithubIssueState = ({
     case 'OPEN':
       return {
         text: 'Open',
-        src: IssueOpenedIcon(fill ?? IssueStateColors.OPEN),
+        src: IssueOpenedIcon(fill),
       };
     case 'CLOSED':
       return {
         text: 'Close',
-        src: IssueClosedIcon(fill ?? IssueStateColors.CLOSE),
+        src: IssueClosedIcon(fill),
       };
     case 'DRAFT':
       return {
         text: 'Draft',
-        src: IssueDraftIcon(fill ?? IssueStateColors.DRAFT),
+        src: IssueDraftIcon(fill),
       };
     default:
       return {
         text: 'Draft',
-        src: IssueDraftIcon(fill ?? IssueStateColors.OPEN),
+        src: IssueDraftIcon(fill),
       };
   }
 };
@@ -80,22 +69,22 @@ const getGithubPullRequestState = ({
     case 'OPEN':
       return {
         text: 'Open',
-        src: GitPullRequestIcon(fill ?? PullRequestStateColors.OPEN),
+        src: GitPullRequestIcon(fill),
       };
     case 'MERGED':
       return {
         text: 'Merged',
-        src: GitPullRequestClosedIcon(fill ?? PullRequestStateColors.MERGED),
+        src: GitPullRequestClosedIcon(fill),
       };
     case 'CLOSED':
       return {
         text: 'Closed',
-        src: GitPullRequestClosedIcon(fill ?? PullRequestStateColors.CLOSE),
+        src: GitPullRequestClosedIcon(fill),
       };
     default:
       return {
         text: 'Draft',
-        src: GitPullRequestDraftIcon(fill ?? PullRequestStateColors.DRAFT),
+        src: GitPullRequestDraftIcon(fill),
       };
   }
 };
@@ -103,6 +92,7 @@ const getGithubPullRequestState = ({
 const StateLabel = ({
   text,
   icon: { src: iconSrc, fill, ...iconRest },
+  textColor,
   ...rest
 }: StateLabelIconProps) => {
   if (!text) {
@@ -132,7 +122,7 @@ const StateLabel = ({
         src={iconSrc}
         {...iconRest}
       />
-      <CustomText fill={palette.white} size="small">
+      <CustomText fill={textColor} size="small">
         {text}
       </CustomText>
     </AutoLayout>
@@ -140,35 +130,56 @@ const StateLabel = ({
 };
 
 export const EntityStateLabel = ({ state, target, iconOnly = true }: EntityStateLabelProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
+  const issueStateColors = {
+    DRAFT: colorStyles.state.draft,
+    OPEN: colorStyles.state.open,
+    CLOSED: colorStyles.state.closed,
+  };
+
+  const pullRequestStateColors = {
+    DRAFT: colorStyles.state.draft,
+    OPEN: colorStyles.state.open,
+    CLOSED: colorStyles.state.closed,
+    MERGED: colorStyles.state.merged,
+    QUEUED: colorStyles.state.open,
+  };
+
   if (target === 'issue' && state !== 'MERGED') {
+    const stateColors = issueStateColors[state] ?? colorStyles.state.draft;
     return (
       <StateLabel
         name="StateLabel"
-        fill={IssueStateColors[state]}
+        fill={stateColors.bg}
         state={state}
         icon={{
           src: getGithubIssueState({
             state: state,
-            fill: !iconOnly ? palette.white : undefined,
+            fill: !iconOnly ? colorStyles.fg.onEmphasis : stateColors.fg,
           }).src,
         }}
+        textColor={colorStyles.fg.onEmphasis}
         text={!iconOnly ? getGithubIssueState({ state: state }).text : undefined}
       />
     );
   }
 
   if (target === 'pullRequest') {
+    const stateColors = pullRequestStateColors[state] ?? colorStyles.state.draft;
     return (
       <StateLabel
         name="StateLabel"
-        fill={PullRequestStateColors[state]}
+        fill={stateColors.bg}
         state={state}
         icon={{
           src: getGithubPullRequestState({
             state: state,
-            fill: !iconOnly ? palette.white : undefined,
+            fill: !iconOnly ? colorStyles.fg.onEmphasis : stateColors.fg,
           }).src,
         }}
+        textColor={colorStyles.fg.onEmphasis}
         text={!iconOnly ? getGithubPullRequestState({ state: state }).text : undefined}
       />
     );

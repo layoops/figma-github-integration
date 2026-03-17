@@ -1,13 +1,16 @@
+import type { WidgetTheme } from '../../shared/styles';
+
 import { useModal } from '../../shared/lib/hooks';
-import { borderRadius, ColorStyles } from '../../shared/styles';
+import { borderRadius, getColorStyles } from '../../shared/styles';
 import { Modal } from '../../shared/ui';
 import { AutoLayout } from '../../widget-components';
 import { Header } from './header';
 
-type LayoutProps = {} & AutoLayoutProps;
+type LayoutProps = { widgetTheme?: WidgetTheme } & AutoLayoutProps;
 
-export const Layout = ({ children }: LayoutProps) => {
+export const Layout = ({ children, widgetTheme = 'light' }: LayoutProps) => {
   const { modal } = useModal();
+  const colorStyles = getColorStyles(widgetTheme);
 
   return (
     <AutoLayout
@@ -17,11 +20,11 @@ export const Layout = ({ children }: LayoutProps) => {
       horizontalAlignItems="center"
       direction="vertical"
       cornerRadius={borderRadius.large}
-      fill={ColorStyles.surface.background}
-      stroke={ColorStyles.border}
+      fill={colorStyles.surface.background}
+      stroke={colorStyles.border}
       width={440}
     >
-      <Header />
+      <Header widgetTheme={widgetTheme} />
       <AutoLayout
         verticalAlignItems="center"
         horizontalAlignItems="center"
@@ -30,7 +33,7 @@ export const Layout = ({ children }: LayoutProps) => {
       >
         {children}
       </AutoLayout>
-      <Modal />
+      <Modal widgetTheme={widgetTheme} />
     </AutoLayout>
   );
 };

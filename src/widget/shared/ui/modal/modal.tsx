@@ -1,12 +1,17 @@
+import type { WidgetTheme } from '../../styles/themes';
+
 import { AutoLayout, Line, Rectangle } from '../../../widget-components';
 import { useModal } from '../../lib/hooks';
+import { getColorStyles } from '../../styles';
 import { IconButton } from '../buttons';
 import { CustomText } from '../custom-text';
 import { IconClose } from '../icons';
 
-export type ModalProps = Omit<AutoLayoutProps, 'children'>;
+export type ModalProps = Omit<AutoLayoutProps, 'children'> & {
+  widgetTheme?: WidgetTheme;
+};
 
-export const Modal = ({ ...rest }: ModalProps) => {
+export const Modal = ({ widgetTheme = 'light', ...rest }: ModalProps) => {
   const {
     closeModal,
     modal: {
@@ -14,6 +19,8 @@ export const Modal = ({ ...rest }: ModalProps) => {
       modalContent: { title, children },
     },
   } = useModal();
+
+  const colorStyles = getColorStyles(widgetTheme);
 
   return (
     <AutoLayout
@@ -32,7 +39,7 @@ export const Modal = ({ ...rest }: ModalProps) => {
       <Rectangle
         width="fill-parent"
         height="fill-parent"
-        fill="#1f232880"
+        fill={`${colorStyles.fg.default}80`}
         x={{ type: 'left-right', leftOffset: 0, rightOffset: 0 }}
         y={{ type: 'top-bottom', topOffset: 0, bottomOffset: 0 }}
         positioning="absolute"
@@ -42,10 +49,10 @@ export const Modal = ({ ...rest }: ModalProps) => {
         direction="vertical"
         width="fill-parent"
         spacing="auto"
-        fill="#fff"
+        fill={colorStyles.surface.background}
         cornerRadius={8}
       >
-        <AutoLayout direction="vertical" width="fill-parent" fill="#fff">
+        <AutoLayout direction="vertical" width="fill-parent" fill={colorStyles.surface.background}>
           <AutoLayout padding={6} verticalAlignItems="center" width="fill-parent" spacing="auto">
             <AutoLayout
               padding={{ vertical: 4, horizontal: 6 }}
@@ -53,17 +60,17 @@ export const Modal = ({ ...rest }: ModalProps) => {
               width="fill-parent"
               spacing="auto"
             >
-              <CustomText>{title}</CustomText>
+              <CustomText fill={colorStyles.fg.default}>{title}</CustomText>
             </AutoLayout>
             <IconButton
               onClick={closeModal}
               size="extra-small"
               appearance="ghost"
-              iconSrc={IconClose()}
+              iconSrc={IconClose(colorStyles.fg.muted)}
             />
           </AutoLayout>
 
-          <Line stroke="$d0d7de" strokeWidth={1} length="fill-parent" />
+          <Line stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />
         </AutoLayout>
 
         <AutoLayout
@@ -71,11 +78,13 @@ export const Modal = ({ ...rest }: ModalProps) => {
           direction="vertical"
           width="fill-parent"
           spacing="auto"
-          fill="#fff"
+          fill={colorStyles.surface.background}
           overflow="scroll"
         >
           {typeof children === 'string' ? (
-            <CustomText size="extra-small">{children}</CustomText>
+            <CustomText fill={colorStyles.fg.default} size="extra-small">
+              {children}
+            </CustomText>
           ) : (
             children
           )}

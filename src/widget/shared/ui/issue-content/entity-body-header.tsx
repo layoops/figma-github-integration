@@ -1,5 +1,8 @@
-import { AutoLayout, Line } from '../../../widget-components';
-import { ColorStyles } from '../../styles';
+import type { WidgetTheme } from '../../styles/themes';
+
+import { AutoLayout, Line, useSyncedState } from '../../../widget-components';
+import { SYNC_KEYS } from '../../lib/sync-keys';
+import { getColorStyles } from '../../styles';
 import { Avatar } from '../avatar';
 import { CustomText } from '../custom-text';
 
@@ -20,9 +23,12 @@ export type EntityBodyHeaderProps = {
 } & AutoLayoutProps;
 
 export const EntityBodyHeader = ({ right = undefined, left, ...rest }: EntityBodyHeaderProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
   return (
     <AutoLayout
-      fill={ColorStyles.surface.muted}
+      fill={colorStyles.surface.muted}
       direction="vertical"
       height="hug-contents"
       width="fill-parent"
@@ -46,6 +52,7 @@ export const EntityBodyHeader = ({ right = undefined, left, ...rest }: EntityBod
               name="Comment updated date"
               width="hug-contents"
               horizontalAlignText="right"
+              fill={colorStyles.fg.muted}
             >
               {right?.text.text}
             </CustomText>
@@ -62,7 +69,7 @@ export const EntityBodyHeader = ({ right = undefined, left, ...rest }: EntityBod
           </AutoLayout>
         )}
       </AutoLayout>
-      <Line stroke={ColorStyles.border} strokeWidth={1} length="fill-parent" />
+      <Line stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />
     </AutoLayout>
   );
 };

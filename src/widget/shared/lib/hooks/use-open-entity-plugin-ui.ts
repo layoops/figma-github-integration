@@ -12,7 +12,10 @@ export const useOpenEntityPluginUI = () => {
   ) => {
     const { id: entityId, __typename } = entity;
 
-    const existingGithubEntityWidget = checkIfExistEntityWidget({ id: entityId, __typename });
+    const existingGithubEntityWidget = await checkIfExistEntityWidget({
+      id: entityId,
+      __typename,
+    });
 
     let routeName = routes.issue(entityId);
 
@@ -27,19 +30,19 @@ export const useOpenEntityPluginUI = () => {
       case 'ProjectV2':
         routeName = routes.project(entityId);
         break;
-
-      default:
-        break;
     }
 
-    !existingGithubEntityWidget &&
+    console.log(existingGithubEntityWidget, 'existingGithubEntityWidget');
+
+    if (!existingGithubEntityWidget) {
       openPluginUI({
-        routeName: routeName,
+        routeName,
         props: {},
         options: {
           visible: true,
         },
       });
+    }
   };
 
   return openEntityPluginUI;

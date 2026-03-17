@@ -33,7 +33,7 @@ export const AccessTokenForm = ({ onTokenSubmit, isLoading, error }: AccessToken
       }
       footer={
         <Button loading={isLoading} type="submit" block>
-          {t('authorizationPage.form.saveManualToken')}
+          {t('authorizationPage.form.addManualToken')}
         </Button>
       }
     >

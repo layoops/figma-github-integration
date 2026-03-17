@@ -15,7 +15,7 @@ export const useQuerySuggestions = <K extends string = string>({
   editorRef,
   overlayAnchorRef,
   suggestionsConfig,
-}: UseQuerySuggestionsProps) => {
+}: UseQuerySuggestionsProps<K>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeKey, setActiveKey] = useState<K | null>(null);
   const [filterText, setFilterText] = useState('');

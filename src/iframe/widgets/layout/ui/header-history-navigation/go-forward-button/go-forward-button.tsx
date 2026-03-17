@@ -1,28 +1,25 @@
-import { ArrowRightIcon, SyncIcon } from '@primer/octicons-react';
+import { ArrowRightIcon } from '@primer/octicons-react';
 import { IconButton } from '@primer/react';
-import { useRouter, useRouterState } from '@tanstack/react-router';
+import { useRouter } from '@tanstack/react-router';
+
+import { useTranslation } from '@/shared/lib/contexts';
 
 export function GoForwardButton() {
+  const { t } = useTranslation();
   const router = useRouter();
-  const { location } = useRouterState();
 
-  const history = router.history;
+  const canGoForward = router.history.location.state.__TSR_index < router.history.length - 1;
 
-  const stateIndexKey = '__TSR_index';
-  const canGoForward = location.state[stateIndexKey] !== history.length - 1;
-
-  const Icon = canGoForward ? ArrowRightIcon : SyncIcon;
-  const ariaLabel = canGoForward ? 'Go forward' : 'Refresh page';
-
-  const onClick = canGoForward ? () => router.history.forward() : () => router.invalidate();
+  const Icon = ArrowRightIcon;
 
   return (
     <IconButton
       size="small"
       variant="invisible"
       icon={Icon}
-      onClick={onClick}
-      aria-label={ariaLabel}
+      onClick={() => router.history.forward()}
+      aria-label={t('header.navigation.forwardButton.tooltipText')}
+      disabled={!canGoForward}
     />
   );
 }

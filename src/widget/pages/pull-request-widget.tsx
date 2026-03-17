@@ -1,3 +1,4 @@
+import type { WidgetTheme } from '../shared/styles/themes';
 import type { PullRequest } from '@octokit/graphql-schema';
 
 import { routes } from '../../global-shared/routes-map';
@@ -5,7 +6,7 @@ import { PullRequestContent } from '../entities/pull-request';
 import { openPluginUI } from '../shared/lib/helpers';
 import { useNodeToggleMore } from '../shared/lib/hooks';
 import { SYNC_KEYS } from '../shared/lib/sync-keys';
-import { ColorStyles } from '../shared/styles';
+import { getColorStyles } from '../shared/styles';
 import { EntityHeader, EntityHeaderTitle, EntityStateLabel } from '../shared/ui';
 import { AutoLayout, Line, useSyncedState } from '../widget-components';
 import { PullRequestContentPreview } from '../widgets/content-preview/ui';
@@ -20,6 +21,7 @@ export const PullRequestWidget = ({ pullRequest: passedPullRequest }: PullReques
     SYNC_KEYS.entity.pullRequest.content,
     () => passedPullRequest ?? null
   );
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
 
   const { id, title } = pullRequest;
 
@@ -31,6 +33,8 @@ export const PullRequestWidget = ({ pullRequest: passedPullRequest }: PullReques
   );
 
   const { toggleMore } = useNodeToggleMore({ setIsToggled: setIsMoreOpen });
+
+  const colorStyles = getColorStyles(widgetTheme);
 
   return (
     <AutoLayout
@@ -75,7 +79,7 @@ export const PullRequestWidget = ({ pullRequest: passedPullRequest }: PullReques
         />
       ) : null}
       <PullRequestContent pullRequest={pullRequest} hidden={!isMoreOpen} />
-      <Line hidden={!isMoreOpen} stroke={ColorStyles.border} strokeWidth={1} length="fill-parent" />
+      <Line hidden={!isMoreOpen} stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />
       <Footer
         githubEntity={{
           entityType: 'pullRequest',

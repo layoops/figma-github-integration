@@ -1,3 +1,5 @@
+import type { Ref } from 'react';
+
 import { SearchIcon } from '@primer/octicons-react';
 import { IconButton } from '@primer/react';
 import clsx from 'clsx';
@@ -14,6 +16,7 @@ export type SearchInputWithButtonProps = {
   onClick?: () => void;
   size?: 'small' | 'medium';
   loading?: boolean;
+  ref?: Ref<HTMLDivElement>;
 } & Omit<GithubQueryBuilderInputProps, 'size'>;
 
 export const SearchInputWithButton = ({
@@ -22,6 +25,7 @@ export const SearchInputWithButton = ({
   loading = false,
   onChange,
   className,
+  ref,
   ...props
 }: SearchInputWithButtonProps) => {
   const { t } = useTranslation();
@@ -31,6 +35,7 @@ export const SearchInputWithButton = ({
       <GithubQueryBuilderInput
         className={clsx(classes.input, className)}
         onChange={onChange}
+        ref={ref}
         {...props}
       />
 

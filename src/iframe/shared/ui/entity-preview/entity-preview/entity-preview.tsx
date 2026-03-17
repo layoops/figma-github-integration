@@ -153,13 +153,7 @@ export const EntityPreview = ({
         )}
       </div>
       {hasMore && entityId && (
-        <Button
-          size="small"
-          variant="invisible"
-          onClick={handleLoadMore}
-          disabled={isLoadingMore}
-          block={true}
-        >
+        <Button variant="invisible" onClick={handleLoadMore} disabled={isLoadingMore} block={true}>
           {isLoadingMore
             ? t('entity.shared.entityPreview.comments.loading')
             : t('entity.shared.entityPreview.comments.loadMore')}

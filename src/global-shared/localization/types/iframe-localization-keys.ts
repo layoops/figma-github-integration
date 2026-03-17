@@ -21,6 +21,12 @@ export type IframeLocalizationKeys = {
       backButton: {
         tooltipText: string;
       };
+      forwardButton: {
+        tooltipText: string;
+      };
+      refreshButton: {
+        tooltipText: string;
+      };
     };
     menu: {
       anchorButton: {
@@ -59,6 +65,13 @@ export type IframeLocalizationKeys = {
         dark: string;
       };
     };
+    widgetTheme: {
+      label: string;
+      values: {
+        light: string;
+        dark: string;
+      };
+    };
     issue: {
       label: string;
       fields: {
@@ -89,6 +102,11 @@ export type IframeLocalizationKeys = {
         customField: string;
         customFieldCaption: string;
       };
+    };
+    defaultTargetUrl: {
+      label: string;
+      caption: string;
+      placeholder: string;
     };
     submitButton: string;
   };
@@ -151,6 +169,9 @@ export type IframeLocalizationKeys = {
       import: {
         title: string;
       };
+      importWithProject: {
+        title: string;
+      };
     };
   };
 
@@ -190,6 +211,7 @@ export type IframeLocalizationKeys = {
       search: { title: string; body: string };
       settings: { title: string; body: string };
       widget: { title: string; body: string };
+      keyboardShortcuts: { title: string; body: string };
     };
   };
 
@@ -199,9 +221,11 @@ export type IframeLocalizationKeys = {
     tokenVerifyError: string;
     loginWithGitHub: string;
     connectingToGitHub: string;
+    waitingForAuthorization: string;
+    cancelAuthorization: string;
     form: {
       tokenErrorTitle: string;
-      saveManualToken: string;
+      addManualToken: string;
       showToken: string;
       hideToken: string;
       generateToken: string;

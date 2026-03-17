@@ -41,7 +41,7 @@ export type IframeToWidgetMessage =
       type: MESSAGE_TYPES.IMPORT_GITHUB_PROJECT;
       data: { project: ProjectWidgetData; contentCount?: ProjectContentCounts };
     }
-  | { type: MESSAGE_TYPES.SEND_GITHUB_TOKEN; token: string }
+  | { type: MESSAGE_TYPES.SEND_GITHUB_TOKEN; token: string; source?: 'oauth' | 'manual' }
   | { type: MESSAGE_TYPES.REMOVE_GITHUB_TOKEN }
   | { type: MESSAGE_TYPES.SEND_GITHUB_SETTINGS; data: { settings: ApplicationSettings } }
   | { type: MESSAGE_TYPES.SET_LOCALE; data: { locale: Locale } }

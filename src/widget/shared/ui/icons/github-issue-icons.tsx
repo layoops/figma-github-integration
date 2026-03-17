@@ -1,6 +1,5 @@
-import { ColorStyles } from '../../styles';
-
-const IconDefaultColor = ColorStyles.validation.default.text;
+// Default icon color — overridden per usage via theme token
+const IconDefaultColor = '#1f2328';
 
 export const IssueDraftIcon = (
   color: string = IconDefaultColor

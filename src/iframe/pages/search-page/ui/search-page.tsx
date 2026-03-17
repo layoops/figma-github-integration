@@ -13,7 +13,7 @@ import { useImportSelectedNodesToFigma } from '@/features/import';
 import { useTranslation } from '@/shared/lib/contexts';
 import { useCursorPagination } from '@/shared/lib/hooks/use-cursor-pagination';
 import { useSelection } from '@/shared/lib/hooks/use-selection';
-import { Loader } from '@/shared/ui';
+import { Loader, StickyUnderlineNav } from '@/shared/ui';
 import { PageContentLayout } from '@/widgets/page-content-layout';
 
 const routeApi = getRouteApi('/_layout/_protected/search');
@@ -133,7 +133,7 @@ export const SearchPage = () => {
       title={t('searchPage.title')}
       footerRight={footerRight}
       navigation={
-        <UnderlineNav>
+        <StickyUnderlineNav>
           {tabs.map((tab) => (
             <UnderlineNav.Item
               key={tab.text}
@@ -144,7 +144,7 @@ export const SearchPage = () => {
               {t(tab.labelKey)}
             </UnderlineNav.Item>
           ))}
-        </UnderlineNav>
+        </StickyUnderlineNav>
       }
     >
       {isLoading && <Loader />}

@@ -1,6 +1,7 @@
+import type { WidgetTheme } from '../../../styles/themes';
 import type { ButtonAppearance, ButtonState } from '../types';
 
-import { palette } from '../../../styles';
+import { getColorStyles } from '../../../styles';
 
 export type ButtonStateStyles = {
   [key in ButtonState | 'hover']: {
@@ -10,63 +11,75 @@ export type ButtonStateStyles = {
   };
 };
 
-export const buttonStyles: Record<ButtonAppearance, ButtonStateStyles> = {
-  primary: {
-    default: {
-      text: palette.white,
-      bg: '#1f883d',
-      border: '#1F793A',
+export const getButtonStyles = (
+  theme: WidgetTheme
+): Record<ButtonAppearance, ButtonStateStyles> => {
+  const c = getColorStyles(theme);
+
+  return {
+    primary: {
+      default: {
+        text: c.button.primary.text,
+        bg: c.button.primary.bg,
+        border: c.button.primary.border,
+      },
+      hover: {
+        bg: c.button.primary.bgHover,
+        text: c.button.primary.text,
+        border: c.button.primary.border,
+      },
+      selected: {
+        text: c.button.primary.text,
+        bg: c.button.primary.bgSelected,
+        border: c.button.primary.border,
+      },
+      disabled: {
+        text: c.button.primary.textDisabled,
+        bg: c.button.primary.bgDisabled,
+        border: c.button.primary.border,
+      },
     },
-    hover: {
-      bg: '#1c8139',
-      text: palette.white,
-      border: '#1D7337',
+    secondary: {
+      default: {
+        bg: c.button.secondary.bg,
+        border: c.button.secondary.border,
+        text: c.button.secondary.text,
+      },
+      hover: {
+        bg: c.button.secondary.bgHover,
+        border: c.button.secondary.border,
+      },
+      selected: {
+        bg: c.button.secondary.bgSelected,
+        border: c.button.secondary.border,
+      },
+      disabled: {
+        bg: c.button.secondary.bgDisabled,
+        border: c.button.secondary.border,
+        text: c.button.secondary.textDisabled,
+      },
     },
-    selected: {
-      text: palette.white,
-      bg: '#197935',
-      border: '#1A6C33',
+    ghost: {
+      default: {
+        text: c.button.primary.text,
+      },
+      hover: {
+        bg: c.button.ghost.bgHover,
+        text: c.button.primary.text,
+      },
+      selected: {
+        bg: c.button.ghost.bgSelected,
+        text: c.button.primary.text,
+      },
+      disabled: {
+        text: c.button.ghost.textDisabled,
+      },
     },
-    disabled: {
-      text: '#ffffffcc',
-      bg: '#95d8a6',
-      border: '#1f793a',
+    none: {
+      default: {},
+      hover: {},
+      selected: {},
+      disabled: {},
     },
-  },
-  secondary: {
-    default: {
-      bg: '#f6f8fa',
-      border: '#D0D7DE',
-    },
-    hover: {
-      bg: '#eaedf1',
-      border: '#cccfd2',
-    },
-    selected: {
-      bg: '#e4e8ec',
-      border: '#c7cbcf',
-    },
-    disabled: {
-      bg: '#eef1f4',
-      border: '#f6f8fa',
-    },
-  },
-  ghost: {
-    default: {},
-    hover: {
-      bg: '#eaedf1',
-    },
-    selected: {
-      bg: '#e4e8ec',
-    },
-    disabled: {
-      text: '#8C959F',
-    },
-  },
-  none: {
-    default: {},
-    hover: {},
-    selected: {},
-    disabled: {},
-  },
+  };
 };

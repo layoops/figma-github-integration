@@ -1,3 +1,4 @@
+import type { WidgetTheme } from '../shared/styles/themes';
 import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
 import { routes } from '../../global-shared/routes-map';
@@ -5,7 +6,7 @@ import { IssueContent } from '../entities/issue/ui';
 import { openPluginUI } from '../shared/lib/helpers';
 import { useNodeToggleMore } from '../shared/lib/hooks';
 import { SYNC_KEYS } from '../shared/lib/sync-keys';
-import { ColorStyles } from '../shared/styles';
+import { getColorStyles } from '../shared/styles';
 import { EntityHeader, EntityHeaderTitle, EntityStateLabel } from '../shared/ui';
 import { AutoLayout, Line, useSyncedState } from '../widget-components';
 import { IssueContentPreview } from '../widgets/content-preview';
@@ -16,6 +17,8 @@ export const IssueWidget = () => {
     SYNC_KEYS.entity.issue.content,
     null
   );
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
 
   const { __typename, id, title } = githubIssue;
 
@@ -74,7 +77,7 @@ export const IssueWidget = () => {
         />
       ) : null}
       <IssueContent entity={githubIssue} hidden={!isMoreOpen} />
-      <Line hidden={!isMoreOpen} stroke={ColorStyles.border} strokeWidth={1} length="fill-parent" />
+      <Line hidden={!isMoreOpen} stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />
       <Footer
         githubEntity={{
           entityType: 'issue',

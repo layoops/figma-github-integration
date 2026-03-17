@@ -1,10 +1,12 @@
 import type { CommonSizes } from '../../../../styles';
+import type { WidgetTheme } from '../../../../styles/themes';
 import type { ButtonAppearance, ButtonState } from '../../types';
 
-import { AutoLayout, SVG, Text } from '../../../../../widget-components';
+import { AutoLayout, SVG, Text, useSyncedState } from '../../../../../widget-components';
+import { SYNC_KEYS } from '../../../../lib/sync-keys';
 import { borderRadius, commonSizings, iconStyles } from '../../../../styles';
 import { IconChevronUp, IconReload } from '../../../icons';
-import { buttonStyles } from '../../styles/button-styles';
+import { getButtonStyles } from '../../styles/button-styles';
 
 export type IconButtonProps = {
   icon?: 'reload' | 'chevron';
@@ -28,6 +30,9 @@ export const IconButton = ({
   href,
   ...rest
 }: IconButtonProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const buttonStyles = getButtonStyles(widgetTheme);
+
   return (
     <AutoLayout
       name={name}

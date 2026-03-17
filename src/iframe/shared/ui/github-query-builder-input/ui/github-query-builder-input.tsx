@@ -1,8 +1,11 @@
 import type { SuggestionConfig } from '../lib/types';
 
 import {
+  type ClipboardEvent,
   type FormEvent,
   type KeyboardEvent,
+  type MutableRefObject,
+  type Ref,
   useCallback,
   useEffect,
   useId,
@@ -26,6 +29,7 @@ export type GithubQueryBuilderInputProps<K extends string = string> = {
   disabled?: boolean;
   id?: string;
   suggestionsConfig?: SuggestionConfig<K>;
+  ref?: Ref<HTMLDivElement>;
 };
 
 export function GithubQueryBuilderInput<K extends string = string>({
@@ -36,9 +40,19 @@ export function GithubQueryBuilderInput<K extends string = string>({
   className,
   id,
   suggestionsConfig,
+  ref,
 }: GithubQueryBuilderInputProps<K>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const mergedRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      (editorRef as MutableRefObject<HTMLDivElement | null>).current = el;
+      if (typeof ref === 'function') ref(el);
+      else if (ref) (ref as MutableRefObject<HTMLDivElement | null>).current = el;
+    },
+    [ref]
+  );
   const overlayAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const reactUniqueId = useId();
@@ -122,6 +136,36 @@ export function GithubQueryBuilderInput<K extends string = string>({
     [updateHighlights, checkContextAndPositionOverlay, onChange]
   );
 
+  const handlePaste = useCallback(
+    (e: ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text/plain');
+      if (!text || !editorRef.current) {
+        return;
+      }
+
+      const selection = window.getSelection();
+      if (!selection?.rangeCount) {
+        return;
+      }
+
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+
+      const textNode = document.createTextNode(text);
+      range.insertNode(textNode);
+      range.setStartAfter(textNode);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      const newValue = editorRef.current.textContent || '';
+      onChange?.(newValue);
+      updateHighlights();
+    },
+    [onChange, updateHighlights]
+  );
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (isOpen && filteredItems.length > 0) {
@@ -198,7 +242,7 @@ export function GithubQueryBuilderInput<K extends string = string>({
       />
 
       <div
-        ref={editorRef}
+        ref={mergedRef}
         id={id}
         className={clsx(classes['query-builder-input'], isEmpty && classes['is-empty'], className)}
         contentEditable
@@ -207,6 +251,7 @@ export function GithubQueryBuilderInput<K extends string = string>({
         autoCorrect="off"
         autoCapitalize="off"
         onInput={handleInput}
+        onPaste={handlePaste}
         onKeyDown={handleKeyDown}
         onMouseUp={checkContextAndPositionOverlay}
         onBlur={onBlur}

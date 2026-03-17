@@ -75,7 +75,14 @@ export const EntityPreviewTitle = ({
           </Link>
         </Text>
       </div>
-      {link && <CopyButton size="small" copyContent={link} ariaLabel="Copy link" />}
+      {link && (
+        <CopyButton
+          size="small"
+          copyContent={link}
+          ariaLabel="Copy link"
+          className={classes['copy-button']}
+        />
+      )}
     </div>
   );
 };

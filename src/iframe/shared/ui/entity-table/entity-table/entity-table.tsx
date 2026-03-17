@@ -33,6 +33,7 @@ type EntityTableProps<T extends BaseRow> = {
   selection?: EntityTableSelection<T>;
   idKey?: keyof T;
   isLoading?: boolean;
+  paginationVersion?: number;
 };
 
 export const EntityTable = <T extends BaseRow>({
@@ -48,6 +49,7 @@ export const EntityTable = <T extends BaseRow>({
   selection,
   idKey = 'id' as keyof T,
   isLoading: isLoading,
+  paginationVersion = 0,
 }: EntityTableProps<T>) => {
   const normalizedData = useMemo<T[]>(
     () => (data ? data?.filter((i): i is T => i !== null) : []),
@@ -145,7 +147,7 @@ export const EntityTable = <T extends BaseRow>({
           <DataTable data={normalizedData} columns={columns} cellPadding="normal" />
         )}
         <Table.Pagination
-          key={`pagination-${currentPageIndex}-${totalCount}`}
+          key={`pagination-${currentPageIndex}-${totalCount}-${paginationVersion}`}
           aria-label={`${title} pagination`}
           pageSize={pageSize}
           totalCount={totalCount ?? 0}

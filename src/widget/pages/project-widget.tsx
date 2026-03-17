@@ -1,11 +1,12 @@
 import type { ProjectWidgetData } from '../../global-shared/plugin-messages';
+import type { WidgetTheme } from '../shared/styles/themes';
 
 import { routes } from '../../global-shared/routes-map';
 import { ProjectContent, type ProjectContentCounts } from '../entities/project';
 import { formatDate, openPluginUI } from '../shared/lib/helpers';
 import { useNodeToggleMore, useWidgetTranslation } from '../shared/lib/hooks';
 import { SYNC_KEYS } from '../shared/lib/sync-keys';
-import { iconStyles, palette } from '../shared/styles';
+import { getColorStyles, iconStyles } from '../shared/styles';
 import { EntityHeader, EntityHeaderTitle } from '../shared/ui';
 import { IconProjects } from '../shared/ui/icons';
 import { AutoLayout, SVG, useSyncedState } from '../widget-components';
@@ -23,6 +24,7 @@ export type GithubProject = {
 
 export const ProjectWidget = () => {
   const { locale } = useWidgetTranslation();
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
 
   const [githubProject] = useSyncedState<GithubProject>(SYNC_KEYS.entity.project.content, {
     project: null,
@@ -43,6 +45,8 @@ export const ProjectWidget = () => {
 
   const { toggleMore } = useNodeToggleMore({ setIsToggled: setIsMoreOpen });
 
+  const colorStyles = getColorStyles(widgetTheme);
+
   return (
     <AutoLayout
       verticalAlignItems="center"
@@ -62,7 +66,7 @@ export const ProjectWidget = () => {
             }}
             preLinkChildren={
               <SVG
-                src={IconProjects(palette.fgColorMuted)}
+                src={IconProjects(colorStyles.fg.muted)}
                 width={iconStyles.sizing.small}
                 height={iconStyles.sizing.small}
               />

@@ -20,7 +20,8 @@ export const RepoIssuesPage = () => {
 
   const [activeFilter, setActiveFilter] = useState<'OPEN' | 'CLOSED'>('OPEN');
 
-  const { pageIndex, cursor, handlePageChange, resetPagination } = useCursorPagination();
+  const { pageIndex, cursor, handlePageChange, resetPagination, paginationVersion } =
+    useCursorPagination();
 
   const { selectedIds, setSelected, count: selectedCount } = useSelection();
 
@@ -74,6 +75,7 @@ export const RepoIssuesPage = () => {
             onFilterChange={handleFilterChange}
             selectedIds={selectedIds}
             onSelectionChange={setSelected}
+            paginationVersion={paginationVersion}
           />
 
           <RepoFooterRightPortal>

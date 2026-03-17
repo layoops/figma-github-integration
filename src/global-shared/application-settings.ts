@@ -12,12 +12,16 @@ export type ContentSettings = {
 
 export type Theme = 'auto' | 'dark' | 'light';
 
+export type WidgetTheme = 'light' | 'dark';
+
 export type ApplicationSettings = {
   theme: Theme;
+  widgetTheme: WidgetTheme;
   locale: Locale;
   issue: ContentSettings;
   pullRequest: ContentSettings;
   project: {
     customField: string;
   };
+  defaultTargetUrl?: string;
 };

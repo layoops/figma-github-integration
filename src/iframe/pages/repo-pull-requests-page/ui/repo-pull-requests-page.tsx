@@ -21,7 +21,8 @@ export const RepoPullRequestsPage = () => {
 
   const [filterState, setFilterState] = useState<'OPEN' | 'CLOSED' | 'MERGED'>('OPEN');
 
-  const { pageIndex, cursor, handlePageChange, resetPagination } = useCursorPagination();
+  const { pageIndex, cursor, handlePageChange, resetPagination, paginationVersion } =
+    useCursorPagination();
   const {
     selectedIds,
     toggle: _toggle,
@@ -80,6 +81,7 @@ export const RepoPullRequestsPage = () => {
             onPageChange={onPageChange}
             activeFilter={filterState}
             onFilterChange={handleFilterChange}
+            paginationVersion={paginationVersion}
             selectedIds={selectedIds}
             onSelectionChange={(ids) => {
               if (ids.length === 0) clearSelection();

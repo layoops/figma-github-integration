@@ -1,10 +1,11 @@
+import type { WidgetTheme } from '../../../../shared/styles/themes';
 import type { EntityTabConfig } from '../../../../shared/ui/entity-tabs';
 import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
 import { formatDate } from '../../../../shared/lib/helpers';
 import { useWidgetTranslation } from '../../../../shared/lib/hooks';
 import { SYNC_KEYS } from '../../../../shared/lib/sync-keys';
-import { palette } from '../../../../shared/styles';
+import { getColorStyles } from '../../../../shared/styles';
 import {
   EntityCommentsSection,
   EntityContentLayout,
@@ -32,6 +33,9 @@ const ISSUE_TABS = [
 
 export const IssueContent = ({ entity, ...rest }: IssueFieldsProps) => {
   const { locale } = useWidgetTranslation();
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
   const [selectedTab, setSelectedTab] = useSyncedState<IssueTab>(
     SYNC_KEYS.entity.issue.selectedContentTab,
     'overview'
@@ -61,7 +65,7 @@ export const IssueContent = ({ entity, ...rest }: IssueFieldsProps) => {
               text: formatDate({ value: entity.updatedAt, locale }),
               icon: {
                 url: entity.__typename === 'Issue' ? entity.url : null,
-                src: IconExternal(palette.black),
+                src: IconExternal(colorStyles.fg.default),
               },
             },
           }}

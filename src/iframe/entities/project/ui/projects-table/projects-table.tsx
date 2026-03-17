@@ -84,7 +84,7 @@ export const ProjectsTable = ({ projects }: ProjectsTableProps) => {
       bottomContent={
         <Text size="small">
           #{project.number} {t('entity.project.table.entityRow.updatedText')}{' '}
-          {project.createdAt && <RelativeTime lang={locale} date={new Date(project.createdAt)} />}
+          {project.updatedAt && <RelativeTime lang={locale} date={new Date(project.updatedAt)} />}
         </Text>
       }
     />

@@ -1,36 +1,19 @@
-import { palette } from './palette';
+import type { WidgetTheme } from './themes';
+
+import { themes } from './themes';
 
 type Sizing = 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large';
 
-export const ColorStyles = {
-  surface: {
-    background: palette.white,
-    muted: '#F6F8FA',
-  },
-  border: '#e8ebef',
-  validation: {
-    default: {
-      text: palette.black,
-      bg: palette.white,
-    },
-    inverted: {
-      text: palette.white,
-      bg: palette.black,
-    },
-    error: {
-      text: palette.red[500],
-      bg: palette.red[50],
-    },
-    warning: {
-      text: palette.orange[500],
-      bg: palette.orange[50],
-    },
-    disabled: {
-      text: palette.gray[600],
-      bg: palette.gray[100],
-    },
-  },
-};
+export const getColorStyles = (theme: WidgetTheme) => ({
+  surface: themes[theme].surface,
+  border: themes[theme].border.default,
+  borderMuted: themes[theme].border.muted,
+  fg: themes[theme].fg,
+  state: themes[theme].state,
+  validation: themes[theme].validation,
+  button: themes[theme].button,
+  header: themes[theme].header,
+});
 
 type TextStylesTypes = {
   [key in Sizing]?: { size: number; lineHeight: number };

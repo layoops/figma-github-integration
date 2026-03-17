@@ -6,6 +6,7 @@ import type { Dispatch, ReactNode, SetStateAction } from 'react';
 
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { createMemoryHistory } from '@tanstack/react-router';
 
 import { MESSAGE_TYPES } from '@/global-shared/message-type';
 import { ROUTES, ROUTES_MAP } from '@/global-shared/routes-map';
@@ -73,13 +74,22 @@ export function useAppContextSetup(): AppContextProps {
     }
   }, [viewerData]);
 
+  useEffect(() => {
+    if (viewerError) {
+      setIsLoading(false);
+    }
+  }, [viewerError]);
+
   const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleLogout = () => {
       setGithubAccessToken(undefined);
       setViewer(undefined);
-      setApplicationSettings(undefined);
+
+      router.update({
+        context: { ...router.options.context, auth: { token: undefined } },
+      });
 
       queryClient.clear();
 
@@ -148,6 +158,8 @@ export function useAppContextSetup(): AppContextProps {
         if (githubAuthToken) {
           setGithubAccessToken(githubAuthToken);
 
+          const freshHistory = createMemoryHistory({ initialEntries: [route] });
+
           router.update({
             context: {
               ...router.options.context,
@@ -156,7 +168,10 @@ export function useAppContextSetup(): AppContextProps {
                 settings: settings,
               },
             },
+            history: freshHistory,
           });
+
+          freshHistory.subscribe(() => router.load());
 
           router.navigate({ to: route, replace: true });
         } else {

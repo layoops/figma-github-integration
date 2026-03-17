@@ -16,6 +16,7 @@ export const SYNC_KEYS = {
   widget: {
     type: 'widget.type',
     lastSyncDate: 'widget.lastSyncDate',
+    theme: 'widget.theme',
     settings: {
       locale: {
         locale: 'shared.state.locale',

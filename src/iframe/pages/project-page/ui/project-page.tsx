@@ -5,7 +5,7 @@ import type { Icon } from '@primer/octicons-react';
 
 import { Activity, useMemo, useState } from 'react';
 import { GitPullRequestIcon, IssueOpenedIcon } from '@primer/octicons-react';
-import { Button, UnderlineNav } from '@primer/react';
+import { Button, SkeletonBox, UnderlineNav } from '@primer/react';
 import { useParams } from '@tanstack/react-router';
 
 import { IssuesTable } from '@/entities/issue';
@@ -16,7 +16,7 @@ import { ROUTES, ROUTES_MAP } from '@/global-shared/routes-map';
 import { useAppContext, useTranslation } from '@/shared/lib/contexts';
 import { useSelection } from '@/shared/lib/hooks/use-selection';
 import { sendMessageToWidget } from '@/shared/lib/utils';
-import { CheckboxField, Loader } from '@/shared/ui';
+import { CheckboxField, EntityPreviewTitle, Loader, StickyUnderlineNav } from '@/shared/ui';
 import { PageContentLayout } from '@/widgets/page-content-layout';
 
 import { toProjectWidgetData } from '../lib/to-project-widget-data';
@@ -76,6 +76,8 @@ const applyPullRequestSettings = (pr: PullRequest, settings: ContentSettings): P
   return result as PullRequest;
 };
 
+const DEFAULT_PER_PAGE = 10;
+
 type NavigationTab = 'Issues' | 'Pull Requests';
 
 const tabs: {
@@ -105,24 +107,24 @@ export const ProjectPage = () => {
 
   const [activeTab, setActiveTab] = useState<NavigationTab>('Issues');
 
-  const { data, isLoading } = useGitHubProject({ id: params.id });
+  const { data: project, isLoading: projectIsLoading } = useGitHubProject({ id: params.id });
 
   const allIssues = useMemo(
     () =>
-      (data?.items.nodes
+      (project?.items.nodes
         ?.filter((node) => node?.type === 'ISSUE' || node?.type === 'DRAFT_ISSUE')
         .map((node) => node?.content)
         .filter(Boolean) ?? []) as (Issue | DraftIssue)[],
-    [data]
+    [project]
   );
 
   const allPullRequests = useMemo(
     () =>
-      (data?.items.nodes
+      (project?.items.nodes
         ?.filter((node) => node?.type === 'PULL_REQUEST')
         .map((node) => node?.content)
         .filter(Boolean) ?? []) as PullRequest[],
-    [data]
+    [project]
   );
 
   const [currentIssueFilter, setCurrentIssueFilter] = useState<IssueFilterState>('OPEN');
@@ -132,12 +134,14 @@ export const ProjectPage = () => {
 
   const [importWithProject, setImportWithProject] = useState(true);
 
+  const [issuePageIndex, setIssuePageIndex] = useState(0);
+  const [pullRequestPageIndex, setPullRequestPageIndex] = useState(0);
+
   const issuesSelection = useSelection();
   const pullRequestsSelection = useSelection();
 
   const handleTabChange = (tab: NavigationTab) => {
     setActiveTab(tab);
-
     issuesSelection.clear();
     pullRequestsSelection.clear();
   };
@@ -155,9 +159,27 @@ export const ProjectPage = () => {
     return allIssues;
   }, [allIssues, currentIssueFilter]);
 
+  const pagedIssues = useMemo(
+    () =>
+      filteredIssues.slice(
+        issuePageIndex * DEFAULT_PER_PAGE,
+        (issuePageIndex + 1) * DEFAULT_PER_PAGE
+      ),
+    [filteredIssues, issuePageIndex]
+  );
+
   const filteredPullRequests = useMemo(() => {
     return allPullRequests.filter((pr) => pr.state === currentPullRequestFilter);
   }, [allPullRequests, currentPullRequestFilter]);
+
+  const pagedPullRequests = useMemo(
+    () =>
+      filteredPullRequests.slice(
+        pullRequestPageIndex * DEFAULT_PER_PAGE,
+        (pullRequestPageIndex + 1) * DEFAULT_PER_PAGE
+      ),
+    [filteredPullRequests, pullRequestPageIndex]
+  );
 
   const issueCounts = useMemo(() => {
     const normalized = allIssues ?? [];
@@ -216,7 +238,7 @@ export const ProjectPage = () => {
   }, [allPullRequests, currentPullRequestFilter]);
 
   const handleImportToProject = () => {
-    const shouldKeepOpen = importWithProject && Boolean(data);
+    const shouldKeepOpen = importWithProject && Boolean(project);
 
     if (activeTab === 'Issues') {
       const selected = allIssues
@@ -240,10 +262,10 @@ export const ProjectPage = () => {
       });
     }
 
-    if (importWithProject && data) {
+    if (importWithProject && project) {
       sendMessageToWidget({
         type: MESSAGE_TYPES.IMPORT_GITHUB_PROJECT,
-        data: { project: toProjectWidgetData(data) },
+        data: { project: toProjectWidgetData(project) },
       });
     }
   };
@@ -251,8 +273,15 @@ export const ProjectPage = () => {
   return (
     <PageContentLayout
       title={t('projectPage.title')}
+      entityTitle={
+        project && !projectIsLoading ? (
+          <EntityPreviewTitle title={project.title} link={project.url} variant="project" />
+        ) : (
+          <SkeletonBox height={28} />
+        )
+      }
       navigation={
-        <UnderlineNav>
+        <StickyUnderlineNav>
           {tabs.map((tab) => {
             const isActive = tab.text === activeTab;
             return (
@@ -266,13 +295,13 @@ export const ProjectPage = () => {
               </UnderlineNav.Item>
             );
           })}
-        </UnderlineNav>
+        </StickyUnderlineNav>
       }
       footerLeft={
         <CheckboxField
           checked={importWithProject}
           onChange={(e) => setImportWithProject(e)}
-          label="Import with Project"
+          label={t('projectPage.footerActions.importWithProject.title')}
         />
       }
       footerRight={
@@ -294,37 +323,40 @@ export const ProjectPage = () => {
         </Button>
       }
     >
-      {isLoading ? (
+      {projectIsLoading ? (
         <Loader />
       ) : (
         <>
           <Activity mode={activeTab === 'Issues' ? 'visible' : 'hidden'}>
             <IssuesTable
-              issues={filteredIssues}
+              issues={pagedIssues}
               counts={issueCounts}
-              pageSize={filteredIssues.length}
-              pageIndex={0}
-              onPageChange={() => {}}
+              pageSize={DEFAULT_PER_PAGE}
+              pageIndex={issuePageIndex}
+              onPageChange={setIssuePageIndex}
               activeFilter={currentIssueFilter}
               onFilterChange={(filter) => {
                 setCurrentIssueFilter(filter);
+                setIssuePageIndex(0);
                 issuesSelection.clear();
               }}
               selectedIds={issuesSelection.selectedIds}
               onSelectionChange={issuesSelection.setSelected}
+              defaultTargetUrl={project?.url}
             />
           </Activity>
 
           <Activity mode={activeTab === 'Pull Requests' ? 'visible' : 'hidden'}>
             <PullRequestsTable
-              pullRequests={filteredPullRequests}
+              pullRequests={pagedPullRequests}
               counts={pullRequestsCounts}
-              pageSize={filteredPullRequests.length}
-              pageIndex={0}
-              onPageChange={() => {}}
+              pageSize={DEFAULT_PER_PAGE}
+              pageIndex={pullRequestPageIndex}
+              onPageChange={setPullRequestPageIndex}
               activeFilter={currentPullRequestFilter}
               onFilterChange={(filter) => {
                 setCurrentPullRequestFilter(filter);
+                setPullRequestPageIndex(0);
                 pullRequestsSelection.clear();
               }}
               selectedIds={pullRequestsSelection.selectedIds}

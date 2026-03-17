@@ -23,6 +23,12 @@ export const iframeRu: IframeLocalizationKeys = {
       backButton: {
         tooltipText: 'Назад',
       },
+      forwardButton: {
+        tooltipText: 'Вперед',
+      },
+      refreshButton: {
+        tooltipText: 'Обновить страницу',
+      },
     },
     menu: {
       anchorButton: {
@@ -61,6 +67,13 @@ export const iframeRu: IframeLocalizationKeys = {
         light: 'Светлая',
       },
     },
+    widgetTheme: {
+      label: 'Тема виджета',
+      values: {
+        light: 'Светлая',
+        dark: 'Тёмная',
+      },
+    },
     issue: {
       label: 'Содержимое issue',
       fields: {
@@ -92,6 +105,12 @@ export const iframeRu: IframeLocalizationKeys = {
         customFieldCaption:
           'Название поля GitHub Project, отображающего статус элемента (например, «Status»).',
       },
+    },
+    // TODO: Поправить называния
+    defaultTargetUrl: {
+      label: 'URL цели по умолчанию',
+      caption: 'Предзаполняет поле цели при создании новой задачи (URL репозитория или проекта).',
+      placeholder: 'https://github.com/owner/repo',
     },
     submitButton: 'Сохранить настройки',
   },
@@ -154,6 +173,9 @@ export const iframeRu: IframeLocalizationKeys = {
       import: {
         title: 'Импортировать',
       },
+      importWithProject: {
+        title: 'Также импортировать проект',
+      },
     },
   },
 
@@ -214,6 +236,10 @@ export const iframeRu: IframeLocalizationKeys = {
         title: 'Виджет',
         body: 'Каждый импортированный элемент становится виджетом на холсте Figma. Виджет содержит четыре вкладки: Обзор (заголовок, статус, метаданные), Тело (описание), Комментарии и Связанные (связанные задачи или PR). Кнопка «Синхронизировать» обновляет данные из GitHub.',
       },
+      keyboardShortcuts: {
+        title: 'Горячие клавиши',
+        body: 'Cmd+← / Ctrl+← — Назад\nCmd+→ / Ctrl+→ — Вперёд\n/ — Фокус поиска',
+      },
     },
   },
 
@@ -223,9 +249,11 @@ export const iframeRu: IframeLocalizationKeys = {
     tokenVerifyError: 'Не удалось проверить токен',
     loginWithGitHub: 'Войти через GitHub',
     connectingToGitHub: 'Подключение к GitHub...',
+    waitingForAuthorization: 'Ожидание авторизации...',
+    cancelAuthorization: 'Отмена',
     form: {
       tokenErrorTitle: 'Ошибка токена',
-      saveManualToken: 'Сохранить токен вручную',
+      addManualToken: 'Добавить токен вручную',
       showToken: 'Показать',
       hideToken: 'Скрыть',
       generateToken: 'Создать персональный токен доступа',

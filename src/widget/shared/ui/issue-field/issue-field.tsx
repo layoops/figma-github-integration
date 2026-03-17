@@ -1,5 +1,8 @@
-import { AutoLayout, Line } from '../../../widget-components';
-import { ColorStyles, palette } from '../../styles';
+import type { WidgetTheme } from '../../styles/themes';
+
+import { AutoLayout, Line, useSyncedState } from '../../../widget-components';
+import { SYNC_KEYS } from '../../lib/sync-keys';
+import { getColorStyles } from '../../styles';
 import { CustomText } from '../custom-text';
 
 export type EntityFieldProps = {
@@ -26,6 +29,9 @@ export const EntityField = ({
   withBorder = true,
   ...rest
 }: EntityFieldProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
   return (
     <AutoLayout
       name="Issue Field"
@@ -44,7 +50,7 @@ export const EntityField = ({
           verticalAlignItems="center"
         >
           {field?.icon}
-          <CustomText fill={palette.fgColorMuted} size="extra-small" fontWeight="bold">
+          <CustomText fill={colorStyles.fg.muted} size="extra-small" fontWeight="bold">
             {field.title}
           </CustomText>
         </AutoLayout>
@@ -63,11 +69,11 @@ export const EntityField = ({
         </AutoLayout>
       )}
       {emptyText ? (
-        <CustomText fill={palette.fgColorMuted} size="extra-small">
+        <CustomText fill={colorStyles.fg.muted} size="extra-small">
           {emptyText}
         </CustomText>
       ) : null}
-      {withBorder && <Line stroke={ColorStyles.border} strokeWidth={1} length="fill-parent" />}
+      {withBorder && <Line stroke={colorStyles.border} strokeWidth={1} length="fill-parent" />}
     </AutoLayout>
   );
 };

@@ -27,6 +27,7 @@ export type PullRequestsTableProps = {
 
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  paginationVersion?: number;
 };
 
 export const PullRequestsTable = ({
@@ -40,6 +41,7 @@ export const PullRequestsTable = ({
   onFilterChange,
   selectedIds,
   onSelectionChange,
+  paginationVersion,
 }: PullRequestsTableProps) => {
   const { t, locale } = useTranslation();
 
@@ -86,6 +88,7 @@ export const PullRequestsTable = ({
   return (
     <EntityTable<PullRequest>
       isLoading={isLoading}
+      paginationVersion={paginationVersion}
       title={t('entity.pullRequest.table.title')}
       data={normalizedPRs.length === 0 ? [{} as PullRequest] : normalizedPRs}
       totalCount={counts?.totalCount}

@@ -14,5 +14,5 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 0;
-  box-sizing: content-box;
+  box-sizing: border-box;
 }

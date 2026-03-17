@@ -1,11 +1,9 @@
 import { useRouter } from '@tanstack/react-router';
 import * as v from 'valibot';
 
-import { MESSAGE_TYPES } from '@/global-shared/message-type';
 import { parseGithubUrl, resolveGithubEntityFromUrl } from '@/shared/api/get-github-entity';
 import { useAppContext, useTranslation } from '@/shared/lib/contexts';
 import { useAppForm } from '@/shared/lib/tanstack-react-form/global-form';
-import { sendMessageToWidget } from '@/shared/lib/utils';
 
 import { createDraftIssue } from '../model/create-draft-issue';
 import { createIssue } from '../model/create-issue';
@@ -17,10 +15,10 @@ export type CreateIssueFormValues = {
 };
 
 type UseCreateIssueFormOptions = {
-  importIssue: boolean;
+  defaultTarget?: string;
 };
 
-export const useCreateIssueForm = ({ importIssue }: UseCreateIssueFormOptions) => {
+export const useCreateIssueForm = ({ defaultTarget = '' }: UseCreateIssueFormOptions) => {
   const { githubAccessToken } = useAppContext();
   const { t } = useTranslation();
   const router = useRouter();
@@ -41,7 +39,7 @@ export const useCreateIssueForm = ({ importIssue }: UseCreateIssueFormOptions) =
 
   return useAppForm({
     defaultValues: {
-      target: '',
+      target: defaultTarget,
       title: '',
       body: '',
     } as CreateIssueFormValues,
@@ -75,11 +73,11 @@ export const useCreateIssueForm = ({ importIssue }: UseCreateIssueFormOptions) =
             token: githubAccessToken,
           });
 
-      if (importIssue && createdIssue) {
-        sendMessageToWidget({ type: MESSAGE_TYPES.IMPORT_GITHUB_ISSUE, data: createdIssue });
+      if (createdIssue?.id) {
+        router.navigate({ to: '/issue/$id', params: { id: createdIssue.id } });
+      } else {
+        router.history.back();
       }
-
-      router.history.back();
     },
   });
 };

@@ -1,3 +1,4 @@
+import type { WidgetTheme } from '../../../../global-shared/application-settings';
 import type { IframeToWidgetMessage } from '../../../../global-shared/plugin-messages';
 import type { WidgetType } from '../types';
 
@@ -20,6 +21,10 @@ import { useWidgetTranslation } from './use-widget-translation';
 
 export const useWidgetInit = () => {
   const [widgetType] = useSyncedState<WidgetType>(SYNC_KEYS.widget.type, 'init');
+  const [widgetTheme, setWidgetTheme] = useSyncedState<WidgetTheme>(
+    SYNC_KEYS.widget.theme,
+    'light'
+  );
 
   const { t } = useWidgetTranslation();
 
@@ -67,7 +72,11 @@ export const useWidgetInit = () => {
           break;
         case MESSAGE_TYPES.SEND_GITHUB_TOKEN:
           setAsyncStorage({ key: storageKeys.accessToken, value: msg.token });
-          figma.notify(t('success.tokenAuthorized'));
+          figma.notify(
+            msg.source === 'oauth'
+              ? t('success.tokenAuthorizedOAuth')
+              : t('success.tokenAuthorized')
+          );
           break;
         case MESSAGE_TYPES.IMPORT_GITHUB_ISSUE:
         case MESSAGE_TYPES.IMPORT_GITHUB_PROJECT_ISSUE:
@@ -87,6 +96,9 @@ export const useWidgetInit = () => {
           break;
         case MESSAGE_TYPES.SEND_GITHUB_SETTINGS:
           setAsyncStorage({ key: storageKeys.settings, value: msg.data.settings });
+          if (msg.data.settings?.widgetTheme) {
+            setWidgetTheme(msg.data.settings.widgetTheme);
+          }
           figma.notify(t('success.settingsSaved'));
           break;
         case MESSAGE_TYPES.SET_LOCALE:
@@ -119,5 +131,5 @@ export const useWidgetInit = () => {
     };
   });
 
-  return { widgetType };
+  return { widgetType, widgetTheme };
 };

@@ -16,6 +16,17 @@
       text-overflow: ellipsis;
     }
   }
+
+  &:has(.copy-button) {
+    .left-part {
+      padding-top: 2px;
+    }
+  }
+}
+
+.left-part {
+  display: flex;
+  gap: 8px;
 }
 
 .preview-link {
@@ -53,9 +64,4 @@
 
 .preview-title-icon {
   margin-top: 4px;
-}
-
-.left-part {
-  display: flex;
-  gap: 8px;
 }

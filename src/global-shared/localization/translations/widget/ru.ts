@@ -44,6 +44,7 @@ export const widgetRu: WidgetLocalizationKeys = {
   success: {
     tokenRemoved: 'Токен GitHub API успешно удален!',
     tokenAuthorized: 'Токен GitHub API успешно авторизован!',
+    tokenAuthorizedOAuth: 'Успешный вход через GitHub OAuth!',
     settingsSaved: 'Новые настройки успешно сохранены!',
     issueResynced: 'Задача {title} синхронизирована!',
     pullRequestResynced: 'Пул-реквест {title} синхронизирован!',

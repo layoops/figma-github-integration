@@ -44,6 +44,7 @@ export const widgetEn: WidgetLocalizationKeys = {
   success: {
     tokenRemoved: 'Successfully Removed Github API Token!',
     tokenAuthorized: 'Successfully authorized Github API Token!',
+    tokenAuthorizedOAuth: 'Successfully signed in via GitHub OAuth!',
     settingsSaved: 'Successfully save new settings!',
     issueResynced: 'Issue {title} resynced!',
     pullRequestResynced: 'Pull request {title} resynced!',

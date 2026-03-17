@@ -1,6 +1,8 @@
+import type { WidgetTheme } from '../../styles/themes';
+
 import { AutoLayout, useSyncedState } from '../../../widget-components';
 import { SYNC_KEYS } from '../../lib/sync-keys';
-import { ColorStyles } from '../../styles';
+import { getColorStyles } from '../../styles';
 import { IconButton } from '../buttons';
 import { CustomText } from '../custom-text';
 import { EntityBodyHeader, IssueContentSection } from '../issue-content';
@@ -33,6 +35,9 @@ export const EntityHTMLBodySection = ({
   hidden,
   ...rest
 }: EntityBodySectionProps) => {
+  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
+  const colorStyles = getColorStyles(widgetTheme);
+
   const [expanded, setExpanded] = useSyncedState(
     SYNC_KEYS.shared.ui.entityHTMLBodySection.expanded(type, key),
     false
@@ -46,7 +51,7 @@ export const EntityHTMLBodySection = ({
 
   return (
     <AutoLayout
-      stroke={ColorStyles.border}
+      stroke={colorStyles.border}
       cornerRadius={12}
       hidden={hidden}
       width="fill-parent"
@@ -82,6 +87,7 @@ export const EntityHTMLBodySection = ({
               size="extra-small"
               width="fill-parent"
               truncate={expanded ? undefined : BODY_MAX_LINES}
+              fill={colorStyles.fg.default}
             >
               {body}
             </CustomText>
@@ -90,7 +96,9 @@ export const EntityHTMLBodySection = ({
       )}
       {!hasContent && (
         <AutoLayout padding={8}>
-          <EmptyEntitySectionBlock>No description provided</EmptyEntitySectionBlock>
+          <EmptyEntitySectionBlock widgetTheme={widgetTheme}>
+            No description provided
+          </EmptyEntitySectionBlock>
         </AutoLayout>
       )}
     </AutoLayout>

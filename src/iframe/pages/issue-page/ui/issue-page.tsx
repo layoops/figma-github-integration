@@ -1,8 +1,10 @@
 import { Button } from '@primer/react';
 import { getRouteApi } from '@tanstack/react-router';
+import { Link as RouterLink } from '@tanstack/react-router';
 
 import { IssuePreview } from '@/entities/issue';
 import { useImportIssueToFigma } from '@/features/import';
+import { ROUTES, ROUTES_MAP } from '@/global-shared/routes-map';
 import { useTranslation } from '@/shared/lib/contexts';
 import { PageContentLayout } from '@/widgets/page-content-layout';
 
@@ -22,6 +24,11 @@ export const IssuePage = () => {
   return (
     <PageContentLayout
       title={t('issuePage.title')}
+      footerLeft={
+        <Button as={RouterLink} to={ROUTES_MAP[ROUTES.ISSUE_CREATE]} variant="default">
+          {t('links.newIssue.title')}
+        </Button>
+      }
       footerRight={
         <Button
           variant="primary"

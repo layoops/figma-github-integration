@@ -13,6 +13,7 @@ const SECTION_KEYS = [
   'search',
   'settings',
   'widget',
+  'keyboardShortcuts',
 ] as const;
 
 export const DocsPage = () => {

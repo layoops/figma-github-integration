@@ -44,7 +44,7 @@ export const RepoLayout = () => {
             variant="repository"
           />
         ) : (
-          <SkeletonBox height={24} />
+          <SkeletonBox height={28} />
         )
       }
       navigation={<RepoNavigation />}

@@ -125,6 +125,11 @@ export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAu
     }
   };
 
+  const handleCancel = () => {
+    stopPolling();
+    setIsLoading(false);
+  };
+
   return (
     <div className={classes['github-app-auth-button']}>
       {authError && (
@@ -132,20 +137,27 @@ export const GithubAppAuthButton = ({ onTokenReceived, isDisabled }: GithubAppAu
           <Text>{authError.message}</Text>
         </Flash>
       )}
+      <div className={classes.buttons}>
+        <Button
+          variant="primary"
+          size="large"
+          onClick={startAuth}
+          loading={isLoading}
+          disabled={isDisabled}
+          leadingVisual={MarkGithubIcon}
+          block
+        >
+          {isLoading
+            ? t('authorizationPage.waitingForAuthorization')
+            : t('authorizationPage.loginWithGitHub')}
+        </Button>
 
-      <Button
-        variant="primary"
-        size="large"
-        onClick={startAuth}
-        loading={isLoading}
-        disabled={isDisabled}
-        leadingVisual={MarkGithubIcon}
-        block
-      >
-        {isLoading
-          ? t('authorizationPage.connectingToGitHub')
-          : t('authorizationPage.loginWithGitHub')}
-      </Button>
+        {isLoading && (
+          <Button variant="default" size="large" onClick={handleCancel} block>
+            {t('authorizationPage.cancelAuthorization')}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

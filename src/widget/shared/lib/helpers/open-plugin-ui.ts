@@ -8,6 +8,7 @@ export const openPluginUI = (input: {
   other?: Record<string, any>;
   options?: Pick<ShowUIOptions, 'visible'>;
 }) => {
+  console.log('openPluginUI');
   const {
     routeName,
     props,

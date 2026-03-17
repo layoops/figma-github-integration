@@ -3,7 +3,7 @@ import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
 import { useMemo } from 'react';
 import { Button, RelativeTime, Text } from '@primer/react';
-import { Link } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 
 import { ROUTES, ROUTES_MAP } from '@/global-shared/routes-map';
 import { useTranslation } from '@/shared/lib/contexts';
@@ -28,6 +28,8 @@ type IssuesTableProps = {
   isLoading?: boolean;
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  defaultTargetUrl?: string;
+  paginationVersion?: number;
 };
 
 export const IssuesTable = ({
@@ -41,8 +43,11 @@ export const IssuesTable = ({
   isLoading,
   selectedIds,
   onSelectionChange,
+  defaultTargetUrl,
+  paginationVersion,
 }: IssuesTableProps) => {
   const { t, locale } = useTranslation();
+  const navigate = useNavigate();
 
   const normalizedIssues = useMemo(
     () => issues.filter((i): i is Issue | DraftIssue => i != null),
@@ -97,6 +102,7 @@ export const IssuesTable = ({
   return (
     <EntityTable<Issue | DraftIssue>
       isLoading={isLoading}
+      paginationVersion={paginationVersion}
       title={t('entity.issue.table.title')}
       data={normalizedIssues.length === 0 ? [{} as Issue] : normalizedIssues}
       totalCount={counts?.totalCount}
@@ -151,8 +157,16 @@ export const IssuesTable = ({
         />
       }
       actions={
-        // TODO: Сделать заполнение формы с url проекта
-        <Button size="small" variant="primary" as={Link} to={ROUTES_MAP[ROUTES.ISSUE_CREATE]}>
+        <Button
+          size="small"
+          variant="primary"
+          onClick={() =>
+            navigate({
+              to: ROUTES_MAP[ROUTES.ISSUE_CREATE],
+              search: { target: defaultTargetUrl },
+            })
+          }
+        >
           {t('links.newIssue.title')}
         </Button>
       }

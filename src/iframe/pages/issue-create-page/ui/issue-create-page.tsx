@@ -1,33 +1,27 @@
-import { useState } from 'react';
 import { Button } from '@primer/react';
 import { useRouter } from '@tanstack/react-router';
 
 import { IssueCreateForm } from '@/entities/issue';
 import { useCreateIssueForm } from '@/features/create';
-import { useTranslation } from '@/shared/lib/contexts';
-import { CheckboxField } from '@/shared/ui';
+import { useAppContext, useTranslation } from '@/shared/lib/contexts';
 import { PageContentLayout } from '@/widgets/page-content-layout';
+
+import { Route } from '../../../app/routing/_layout/_protected/issue/create';
 
 export const IssueCreatePage = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { target } = Route.useSearch();
+  const { applicationSettings } = useAppContext();
 
-  const [importIssue, setImportIssue] = useState(true);
+  const defaultTarget = target ?? applicationSettings?.defaultTargetUrl ?? '';
 
-  const form = useCreateIssueForm({ importIssue });
+  const form = useCreateIssueForm({ defaultTarget });
 
   return (
     <form.AppForm>
       <PageContentLayout
         title={t('issueCreatePage.title')}
-        footerLeft={
-          <CheckboxField
-            checked={importIssue}
-            onChange={setImportIssue}
-            label={t('issueCreatePage.actionImportIssue.label')}
-            disabled={form.state.isSubmitting}
-          />
-        }
         footerRight={
           <>
             <Button onClick={() => router.history.back()} disabled={form.state.isSubmitting}>

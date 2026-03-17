@@ -42,6 +42,7 @@ export type WidgetLocalizationKeys = {
   success: {
     tokenRemoved: string;
     tokenAuthorized: string;
+    tokenAuthorizedOAuth: string;
     settingsSaved: string;
     issueResynced: string;
     pullRequestResynced: string;
