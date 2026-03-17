@@ -1,2 +1,2 @@
-export { useInsertGithubEntitiesToWidget } from './hooks';
-export { resyncEntity } from './model';
+export * from './model/resync-issue';
+export * from './model/use-github-import';

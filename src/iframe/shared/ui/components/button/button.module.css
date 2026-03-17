@@ -1,0 +1,233 @@
+.button {
+  display: flex;
+  flex-direction: row;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  position: relative;
+}
+
+.button {
+  /* Appearance Secondary  */
+  --button-secondary-background: #f6f8fa;
+  --button-secondary-text: #000;
+  --button-secondary-border-color: #d0d7de;
+
+  --button-secondary-hover-background: #eef1f4;
+
+  --button-secondary-selected-background: #e7ebef;
+
+  --button-secondary-disabled-background: #eef1f4;
+  --button-secondary-disabled-border-color: #f6f8fa;
+  --button-secondary-text-disabled: #8C959F;
+
+  /* Appearance Primary  */
+  --button-primary-text: #fff;
+  --button-primary-background: #1f883d;
+  --button-primary-border-color: #1f793a;
+
+  --button-primary-hover-background: #1c8139;
+
+  --button-primary-selected-background: #197935;
+
+  --button-primary-disabled-color: rgba(255, 255, 255, 0.8);
+  --button-primary-disabled-background: rgb(148, 211, 162);
+
+  /* Appearance Ghost  */
+  --button-ghost-text: #000e;
+  --button-ghost-background: transparent;
+  --button-ghost-border-color: transparent;
+
+  --button-ghost-hover-background: #eef1f4;
+
+  --button-ghost-selected-background: #e7ebef;
+
+  --button-ghost-disabled-background: transparent;
+  --button-ghost-disabled-border-color: transparent;
+  --button-ghost-text-disabled: rgb(140, 150, 161);
+}
+
+@media (prefers-color-scheme: dark) {
+  .button {
+    /* Appearance Secondary Dark */
+    --button-secondary-text: rgb(201, 209, 217);
+    --button-secondary-background: rgb(33, 38, 45);
+    --button-secondary-border-color: rgb(48, 54, 61);
+
+    --button-secondary-hover-background: rgb(48, 54, 61);
+    --button-secondary-hover-border-color: rgb(139, 148, 158);
+
+    --button-secondary-selected-background: rgb(49, 54, 62);
+
+    --button-secondary-disabled-background: rgb(22, 27, 34);
+    --button-secondary-disabled-border-color: rgb(22, 27, 34);
+
+    /* Appearance Primary Dark */
+
+    --button-primary-text: #fff;
+    --button-primary-background: #238636;
+    --button-primary-border-color: rgba(240, 246, 252, 0.1);
+
+    --button-primary-hover-background: #29903b;
+
+    --button-primary-selected-background: #2e9a40;
+
+    --button-primary-disabled-color: rgba(255, 255, 255, 0.5);
+    --button-primary-disabled-background: rgba(35, 134, 54, 0.6);
+    --button-primary-disabled-border-color: rgba(240, 246, 252, 0.1);
+
+    /* Appearance Ghost Dark */
+    --button-ghost-text: rgb(201, 209, 217);
+    --button-ghost-background: transparent;
+    --button-ghost-border-color: transparent;
+
+    --button-ghost-hover-background: rgb(48, 54, 61);
+
+    --button-ghost-selected-background: #26282e;
+
+    --button-ghost-disabled-background: transparent;
+    --button-ghost-text-disabled: rgb(72, 79, 88);
+  }
+}
+
+/* Appearance Secondary */
+
+.button-appearance-secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border-color);
+}
+
+.button-appearance-secondary:hover {
+  background: var(--button-secondary-hover-background);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-hover-border-color, --button-secondary-border-color);
+}
+
+.button-appearance-secondary-selected,
+.button-appearance-secondary:active {
+  background: var(--button-secondary-selected-background);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border-color);
+}
+
+.button-appearance-secondary:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+  background: var(--button-secondary-disabled-background);
+  color: var(--button-secondary-text-disabled);
+  border-color: var(--button-secondary-disabled-border-color);
+}
+/* Appearance Primary */
+
+.button-appearance-primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-border-color);
+}
+
+.button-appearance-primary:hover {
+  background: var(--button-primary-hover-background);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-border-color);
+}
+
+.button-appearance-primary-selected,
+.button-appearance-primary:active {
+  background: var(--button-primary-selected-background);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-border-color);
+}
+
+.button-appearance-primary:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+  background: var(--button-primary-disabled-background);
+  color: var(--button-primary-disabled-color);
+  border-color: var(--button-primary-disabled-border-color);
+}
+
+/* Appearance Ghost */
+
+.button-appearance-ghost {
+  background: var(--button-ghost-background);
+  color: var(--button-ghost-text);
+  border-color: var(--button-ghost-border-color);
+}
+
+.button-appearance-ghost:hover {
+  background: var(--button-ghost-hover-background);
+  color: var(--button-ghost-text);
+  border-color: var(--button-ghost-border-color);
+}
+
+.button-appearance-ghost-selected,
+.button-appearance-ghost:active {
+  background: var(--button-ghost-selected-background);
+  color: var(--button-ghost-text);
+  border-color: var(--button-ghost-border-color);
+}
+
+.button-appearance-ghost:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+  background: var(--button-ghost-disabled-background);
+  color: var(--button-ghost-text-disabled);
+  border-color: var(--button-ghost-disabled-border-color);
+}
+
+/* Sizing */
+
+/* Button Sizing */
+
+.button-size-small {
+  padding: 5px 8px;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.button-size-medium {
+  padding: 6px 12px;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.button-size-large {
+  padding: 10px 16px;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Button Icon Sizing */
+
+.button-icon-size-small {
+  height: 28px;
+  width: 28px;
+}
+
+.button-icon-size-medium {
+  height: 32px;
+  width: 32px;
+}
+
+.button-icon-size-large {
+  height: 40px;
+  width: 40px;
+}
+
+
+.button-loader{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+  border-radius: 6px;
+}

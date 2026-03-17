@@ -1,0 +1,13 @@
+.validation-text {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+}
+
+.invalid {
+  color: #d1242f;
+}
+
+.valid {
+  color: #1a7f37;
+}

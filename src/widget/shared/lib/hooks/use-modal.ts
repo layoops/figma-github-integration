@@ -1,18 +1,17 @@
 import { useSyncedState } from '../../../widget-components';
-import { SYNC_KEYS } from '../sync-keys';
 
-type ModalContent = {
+interface ModalContent {
   title: string;
   children?: AutoLayoutProps['children'];
-};
+}
 
-type ModalState = {
+interface ModalState {
   openedModal: boolean;
   modalContent?: ModalContent;
-};
+}
 
 export const useModal = () => {
-  const [modal, setModal] = useSyncedState<ModalState>(SYNC_KEYS.shared.ui.modal.isOpened, {
+  const [modal, setModal] = useSyncedState<ModalState>('openedModal', {
     openedModal: false,
     modalContent: { title: 'Modal', children: undefined },
   });

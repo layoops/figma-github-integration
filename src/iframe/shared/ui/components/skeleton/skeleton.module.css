@@ -1,0 +1,30 @@
+.skeleton {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.11);
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  animation: 2s ease-in-out 0.5s infinite normal none running skeleton-animation;
+}
+
+
+@keyframes skeleton-animation {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+@media(prefers-color-scheme: dark) {
+  .skeleton {
+    background-color: rgba(255, 255, 255, 0.21);
+  }
+}

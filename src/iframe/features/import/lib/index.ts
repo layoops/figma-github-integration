@@ -1,1 +1,1 @@
-export { countProjectContentTypes } from './count-project-content';
+export * from './count-project-content';

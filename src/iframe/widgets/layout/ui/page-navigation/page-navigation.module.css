@@ -1,0 +1,16 @@
+.page-navigation{
+  display: flex;
+  gap: 8px;
+  padding: 0 20px;
+  border-bottom: 1px solid #d8dee4;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 50px;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .page-navigation {
+    border-color: #32363d;
+  }
+}

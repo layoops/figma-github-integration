@@ -1,39 +1,36 @@
-import type { WidgetTheme } from '../../shared/styles';
-
 import { useModal } from '../../shared/lib/hooks';
-import { borderRadius, getColorStyles } from '../../shared/styles';
-import { Modal } from '../../shared/ui';
+import { borderRadius, ColorStyles } from '../../shared/styles';
+import { Modal } from '../../shared/ui/components';
 import { AutoLayout } from '../../widget-components';
 import { Header } from './header';
 
-type LayoutProps = { widgetTheme?: WidgetTheme } & AutoLayoutProps;
+interface LayoutProps extends AutoLayoutProps {}
 
-export const Layout = ({ children, widgetTheme = 'light' }: LayoutProps) => {
+export const Layout = ({ children }: LayoutProps) => {
   const { modal } = useModal();
-  const colorStyles = getColorStyles(widgetTheme);
 
   return (
     <AutoLayout
       overflow={modal.openedModal ? 'visible' : 'hidden'}
       name="Layout"
-      verticalAlignItems="center"
-      horizontalAlignItems="center"
+      verticalAlignItems={'center'}
+      horizontalAlignItems={'center'}
       direction="vertical"
       cornerRadius={borderRadius.large}
-      fill={colorStyles.surface.background}
-      stroke={colorStyles.border}
+      fill={ColorStyles.surface.background}
+      stroke={ColorStyles.border}
       width={440}
     >
-      <Header widgetTheme={widgetTheme} />
+      <Header />
       <AutoLayout
-        verticalAlignItems="center"
-        horizontalAlignItems="center"
+        verticalAlignItems={'center'}
+        horizontalAlignItems={'center'}
         direction="vertical"
-        width="fill-parent"
+        width={'fill-parent'}
       >
         {children}
       </AutoLayout>
-      <Modal widgetTheme={widgetTheme} />
+      <Modal />
     </AutoLayout>
   );
 };

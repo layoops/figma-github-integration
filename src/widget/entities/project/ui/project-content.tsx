@@ -1,196 +1,87 @@
-import type { ProjectWidgetData } from '../../../../global-shared/plugin-messages';
 import type { GithubEntity } from '../../../shared/lib/types/github';
-import type { WidgetTheme } from '../../../shared/styles';
-import type { LinkedEntityRef } from '../hooks/use-insert-github-project-to-figma';
+import type { ProjectV2 } from '@octokit/graphql-schema';
 
-import { routes } from '../../../../global-shared/routes-map';
 import { openPluginUI } from '../../../shared/lib/helpers';
-import { useOpenEntityPluginUI, useWidgetTranslation } from '../../../shared/lib/hooks';
-import { SYNC_KEYS } from '../../../shared/lib/sync-keys';
-import {
-  Button,
-  CustomText,
-  EntityContentLayout,
-  EntityField,
-  EntityHTMLBodySection,
-} from '../../../shared/ui';
-import { EntityStateLabel } from '../../../shared/ui/entity-state-label';
-import { type EntityTabConfig, EntityTabs } from '../../../shared/ui/entity-tabs';
-import { IssueContentBlock, IssueContentSection } from '../../../shared/ui/issue-content';
+import { Button, IssueContentWrapper, TabGroup } from '../../../shared/ui/components';
 import { AutoLayout, useSyncedState } from '../../../widget-components';
+import { IssueBodySection } from '../../issue/ui';
+import { ProjectOverviewSection } from './project-sections';
 
 type ContentTypeCounts = {
   [key: string]: number;
 };
 
-export type ProjectContentCounts = {
+export type CountContentTypesResult = {
   totalContent: number;
   typeCounts: ContentTypeCounts;
   completedTasks: number;
 };
 
-type ProjectContentProps = {
-  project: ProjectWidgetData | null;
-} & AutoLayoutProps;
+interface ProjectContentProps extends AutoLayoutProps {
+  project: ProjectV2 | null;
+  contentCount?: CountContentTypesResult;
+}
 
-type ProjectTab = 'overview' | 'body';
-
-const PROJECT_TABS = [
-  { key: 'overview', labelKey: 'tabs.overview' },
-  {
-    key: 'body',
-    labelKey: 'tabs.body',
-  },
-] satisfies readonly EntityTabConfig<ProjectTab>[];
+type ProjectTab = 'Overview' | 'Body' | 'Comments';
 
 export const openPluginProjectUI = (props: { githubEntity: GithubEntity }) => {
   openPluginUI({
-    routeName: routes.project(props.githubEntity.entity.id),
+    routeName: 'import',
     props: props ?? {},
     options: { visible: true },
   });
 };
 
-export const ProjectContent = ({ project, ...rest }: ProjectContentProps) => {
-  const { t } = useWidgetTranslation();
+export const ProjectContent = ({ project, contentCount, ...rest }: ProjectContentProps) => {
+  const [selectedTab, setSelectedTab] = useSyncedState<ProjectTab>('issueContentTab', 'Overview');
 
-  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
-  const [selectedTab, setSelectedTab] = useSyncedState<ProjectTab>(
-    SYNC_KEYS.entity.project.selectedContentTab,
-    'overview'
-  );
+  const [projectTabs] = useSyncedState<ProjectTab[]>('projectTabs', () => {
+    const tabs: ProjectTab[] = ['Overview'];
+    if (project?.readme) {
+      tabs.push('Body');
+    }
 
-  const [linkedEntityRefs] = useSyncedState<LinkedEntityRef[]>(
-    SYNC_KEYS.entity.project.linkedEntityNodeIds,
-    []
-  );
-
-  const openEntityPluginUI = useOpenEntityPluginUI();
-
-  const hasLinkedEntities = linkedEntityRefs.length > 0;
-
-  const importedIds = new Set(linkedEntityRefs.map((ref) => ref.id));
-  const allItems = project?.items?.nodes ?? [];
-  const unimportedIssueCount = allItems.filter(
-    (item) => item?.type === 'ISSUE' && !importedIds.has(item?.content?.id ?? '')
-  ).length;
-  const unimportedPRCount = allItems.filter(
-    (item) => item?.type === 'PULL_REQUEST' && !importedIds.has(item?.content?.id ?? '')
-  ).length;
-  const hasUnimportedEntities = unimportedIssueCount > 0 || unimportedPRCount > 0;
+    return tabs;
+  });
 
   return (
-    <EntityContentLayout {...rest}>
-      <EntityTabs
-        tabs={PROJECT_TABS}
-        selectedTab={selectedTab}
-        onChange={(tab) => setSelectedTab(tab)}
+    <IssueContentWrapper {...rest}>
+      <TabGroup
         padding={{ horizontal: 12 }}
+        tabs={projectTabs}
+        selectedTab={selectedTab}
+        onSelect={setSelectedTab}
       />
-
       <AutoLayout padding={12} spacing={12} direction="vertical" width="fill-parent">
-        {selectedTab === 'overview' && (
-          <IssueContentSection direction="vertical">
-            <EntityField
-              field={{ title: t('entityMetadata.importedEntities.fieldTitle') }}
-              emptyText={
-                !hasLinkedEntities ? t('entityMetadata.importedEntities.emptyText') : undefined
-              }
-              right={
-                hasLinkedEntities
-                  ? {
-                      props: { direction: 'vertical' },
-                      children: (
-                        <IssueContentBlock
-                          cornerRadius={0}
-                          padding={0}
-                          spacing={0}
-                          direction="vertical"
-                        >
-                          {linkedEntityRefs.map((ref) => (
-                            <Button
-                              key={`project-linked-entity-${ref.nodeId}`}
-                              textAlign="left"
-                              appearance="ghost"
-                              width="fill-parent"
-                              horizontalAlignItems="start"
-                              minHeight={34}
-                              size="extra-small"
-                              leftChildren={
-                                <EntityStateLabel
-                                  target={ref.type === 'pullRequest' ? 'pullRequest' : 'issue'}
-                                  iconOnly={true}
-                                  state="OPEN"
-                                />
-                              }
-                              onClick={() => {
-                                openEntityPluginUI({ id: ref.id, __typename: ref.__typename });
-                              }}
-                              text={ref.title}
-                              widgetTheme={widgetTheme}
-                            />
-                          ))}
-                        </IssueContentBlock>
-                      ),
-                    }
-                  : undefined
-              }
-            />
-            <EntityField
-              field={{ title: t('entityMetadata.notImportedEntities.fieldTitle') }}
-              emptyText={
-                !hasUnimportedEntities
-                  ? t('entityMetadata.notImportedEntities.emptyText')
-                  : undefined
-              }
-              withBorder={false}
-              right={
-                hasUnimportedEntities
-                  ? {
-                      children: (
-                        <IssueContentBlock
-                          cornerRadius={0}
-                          padding={0}
-                          spacing={8}
-                          direction="horizontal"
-                        >
-                          {unimportedIssueCount > 0 && (
-                            <AutoLayout spacing={4} verticalAlignItems="center">
-                              <EntityStateLabel target="issue" iconOnly={true} state="OPEN" />
-                              <CustomText size="extra-small">
-                                {String(unimportedIssueCount)}
-                              </CustomText>
-                            </AutoLayout>
-                          )}
-                          {unimportedPRCount > 0 && (
-                            <AutoLayout spacing={4} verticalAlignItems="center">
-                              <EntityStateLabel target="pullRequest" iconOnly={true} state="OPEN" />
-                              <CustomText size="extra-small">
-                                {String(unimportedPRCount)}
-                              </CustomText>
-                            </AutoLayout>
-                          )}
-                        </IssueContentBlock>
-                      ),
-                    }
-                  : undefined
-              }
-            />
-          </IssueContentSection>
-        )}
-
-        {selectedTab === 'body' && project?.readme && (
-          <EntityHTMLBodySection
+        <ProjectOverviewSection hidden={selectedTab !== 'Overview'} contentCount={contentCount} />
+        {projectTabs.includes('Body') && Boolean(project?.readme) && (
+          <IssueBodySection
             id={project.id}
-            type="description"
-            hidden={false}
-            body={project.readme}
+            type="body"
+            hidden={selectedTab !== 'Body'}
+            content={project?.readme}
             header={{
-              left: { title: t('common.description') },
+              left: {
+                text: 'Description',
+              },
             }}
           />
         )}
+        <Button
+          onClick={() =>
+            openPluginProjectUI({
+              githubEntity: {
+                entityType: 'project',
+                entity: { id: project.id, title: project.title },
+              },
+            })
+          }
+          size="medium"
+          width="fill-parent"
+          appearance="secondary"
+          text="Import"
+        />
       </AutoLayout>
-    </EntityContentLayout>
+    </IssueContentWrapper>
   );
 };

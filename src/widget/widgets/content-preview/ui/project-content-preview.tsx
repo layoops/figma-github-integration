@@ -1,15 +1,15 @@
-import { CustomText } from '../../../shared/ui';
+import { CustomText } from '../../../shared/ui/components';
 import { AutoLayout } from '../../../widget-components';
 
-type ProjectHeaderContentProps = {
+interface ProjectHeaderContentProps extends AutoLayoutProps {
   shortDescription: string;
-} & AutoLayoutProps;
+}
 
 export const ProjectContentPreview = ({ shortDescription, ...rest }: ProjectHeaderContentProps) => {
   return (
     <AutoLayout
       direction="horizontal"
-      verticalAlignItems="center"
+      verticalAlignItems={'center'}
       spacing={6}
       width="fill-parent"
       {...rest}

@@ -1,2 +1,1 @@
-export { PullRequestContent } from './ui';
-export { useInsertGithubPullRequestToFigma } from './hooks';
+export * from './ui';

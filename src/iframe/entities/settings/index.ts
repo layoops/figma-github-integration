@@ -1,1 +1,2 @@
-export { SettingsForm } from './ui';
+export * from './lib/settings.interface';
+export * from './ui';

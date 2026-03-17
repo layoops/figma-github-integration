@@ -1,1 +1,2 @@
-export { IssueContent } from './issue-content';
+export * from './issue-content';
+export * from './issue-sections';

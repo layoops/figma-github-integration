@@ -1,0 +1,18 @@
+.project-title {
+  display: flex;
+  gap: 2px;
+  color: var(--fg-muted);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.project-title-link {
+  color: var(--fg-link);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.project-title-strong {
+  color: var(--fg-default);
+  font-weight: 600;
+}

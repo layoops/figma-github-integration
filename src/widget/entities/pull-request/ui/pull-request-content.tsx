@@ -1,90 +1,95 @@
-import type { WidgetTheme } from '../../../shared/styles/themes';
-import type { EntityTabConfig } from '../../../shared/ui/entity-tabs';
 import type { PullRequest } from '@octokit/graphql-schema';
 
 import { formatDate } from '../../../shared/lib/helpers';
-import { useWidgetTranslation } from '../../../shared/lib/hooks';
-import { SYNC_KEYS } from '../../../shared/lib/sync-keys';
-import { getColorStyles } from '../../../shared/styles';
-import {
-  EntityCommentsSection,
-  EntityContentLayout,
-  EntityHTMLBodySection,
-  EntityRelativesSection,
-} from '../../../shared/ui';
-import { EntityMetadataSection } from '../../../shared/ui/entities-sections/entity-metadata-section';
-import { EntityTabs } from '../../../shared/ui/entity-tabs';
+import { Colors } from '../../../shared/styles';
+import { IssueContentWrapper, TabGroup } from '../../../shared/ui/components';
 import { IconExternal } from '../../../shared/ui/icons';
 import { AutoLayout, useSyncedState } from '../../../widget-components';
+import {
+  IssueBodySection,
+  IssueCommentsSection,
+  IssueOverviewSection,
+  IssueRelativesSection,
+} from '../../issue/ui';
 
-type PullRequestContentProps = {
+interface PullRequestContentProps extends AutoLayoutProps {
   pullRequest: PullRequest;
-} & AutoLayoutProps;
+}
 
-type PullRequestTab = 'overview' | 'body' | 'comments' | 'relatives';
-
-const PULL_REQUEST_TABS = [
-  { key: 'overview', labelKey: 'tabs.overview' },
-  {
-    key: 'comments',
-    labelKey: 'tabs.comments',
-  },
-] satisfies readonly EntityTabConfig<PullRequestTab>[];
+type PullRequestTabTypes = 'Overview' | 'Body' | 'Comments' | 'Relatives';
 
 export const PullRequestContent = ({ pullRequest, ...rest }: PullRequestContentProps) => {
-  const { t, locale } = useWidgetTranslation();
-  const [widgetTheme] = useSyncedState<WidgetTheme>(SYNC_KEYS.widget.theme, 'light');
-  const colorStyles = getColorStyles(widgetTheme);
-
-  const [selectedTab, setSelectedTab] = useSyncedState<PullRequestTab>(
-    SYNC_KEYS.entity.pullRequest.selectedContentTab,
-    'overview'
+  const [selectedTab, setSelectedTab] = useSyncedState<PullRequestTabTypes>(
+    'issueContentTab',
+    'Overview'
   );
 
+  const [pullRequestTabs] = useSyncedState<PullRequestTabTypes[]>('pullRequestTabs', () => {
+    const tabs: PullRequestTabTypes[] = ['Overview'];
+    if (pullRequest.bodyText.length) {
+      tabs.push('Body');
+    }
+    if (pullRequest?.comments?.nodes?.length > 0) {
+      tabs.push('Comments');
+    }
+    if (
+      pullRequest?.timelineItems?.nodes?.length > 0 ||
+      pullRequest?.projectItems?.nodes.length > 0 ||
+      pullRequest?.milestone
+    ) {
+      tabs.push('Relatives');
+    }
+    return tabs;
+  });
+
   return (
-    <EntityContentLayout {...rest}>
-      <EntityTabs
-        tabs={PULL_REQUEST_TABS}
-        selectedTab={selectedTab}
-        onChange={(tab) => setSelectedTab(tab)}
+    <IssueContentWrapper {...rest}>
+      <TabGroup
         padding={{ horizontal: 12 }}
+        tabs={pullRequestTabs}
+        selectedTab={selectedTab}
+        onSelect={setSelectedTab}
       />
       <AutoLayout padding={12} spacing={12} direction="vertical" width="fill-parent">
-        <EntityHTMLBodySection
-          id={pullRequest.id}
-          type="description"
-          hidden={selectedTab !== 'overview'}
-          body={pullRequest?.bodyText}
-          header={{
-            left: {
-              title: t('common.description'),
-            },
-            right: {
-              text: formatDate({ value: pullRequest?.updatedAt, locale }),
-              icon: {
-                url: pullRequest.url,
-                src: IconExternal(colorStyles.fg.default),
+        <IssueOverviewSection hidden={selectedTab !== 'Overview'} issue={pullRequest} />
+
+        {Boolean(pullRequest.bodyText.length > 0) && (
+          <IssueBodySection
+            id={pullRequest.id}
+            type="body"
+            hidden={selectedTab !== 'Body'}
+            content={pullRequest.bodyText}
+            header={{
+              left: {
+                text: 'Description',
               },
-            },
-          }}
-        />
-        <EntityMetadataSection hidden={selectedTab !== 'overview'} entity={pullRequest}>
-          <EntityRelativesSection
-            content={{
-              timelineItems: pullRequest?.timelineItems?.nodes,
-              projectItems: pullRequest?.projectItems?.nodes,
-              milestone: pullRequest?.milestone,
+              right: {
+                text: formatDate({ value: pullRequest?.updatedAt }),
+                icon: {
+                  url: pullRequest.url,
+                  src: IconExternal(Colors.black),
+                },
+              },
             }}
           />
-        </EntityMetadataSection>
-        <EntityCommentsSection
-          hidden={selectedTab !== 'comments'}
-          comments={pullRequest?.comments?.nodes}
-          hasNextPage={pullRequest?.comments?.pageInfo?.hasNextPage}
-          entityId={pullRequest.id}
-          entityType="pull-request"
+        )}
+        {pullRequest?.comments?.nodes.length > 0 ? (
+          <IssueCommentsSection
+            hidden={selectedTab !== 'Comments'}
+            issueUrl={pullRequest.url}
+            comments={pullRequest.comments}
+          />
+        ) : undefined}
+        <IssueRelativesSection
+          hidden={selectedTab !== 'Relatives'}
+          content={{
+            timelineItems: pullRequest?.timelineItems?.nodes,
+            projectItems: pullRequest?.projectItems?.nodes,
+            milestone: pullRequest?.milestone,
+          }}
+          githubEntityType="pull-request"
         />
       </AutoLayout>
-    </EntityContentLayout>
+    </IssueContentWrapper>
   );
 };

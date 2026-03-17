@@ -1,8 +1,8 @@
 /// <reference types="vite/client" />
-type ImportMetaEnv = {
+interface ImportMetaEnv {
   readonly VITE_GITHUB_TOKEN: string;
-};
+}
 
-type ImportMeta = {
+interface ImportMeta {
   readonly env: ImportMetaEnv;
-};
+}

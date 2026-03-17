@@ -1,4 +1,4 @@
-import { openPluginSettingsPage } from '../../../features/open-iframe/model/open-iframe';
+import { openSettingsIframe } from '../../../features/open-iframe/model/open-iframe';
 import { usePropertyMenu } from '../../../widget-components';
 import { IconReload } from '../../ui/icons';
 
@@ -14,7 +14,7 @@ export const useWidgetMenu = () => {
 
   usePropertyMenu(propertyMenu, ({ propertyName }) => {
     if (propertyName === 'settings') {
-      openPluginSettingsPage();
+      openSettingsIframe();
     }
   });
 

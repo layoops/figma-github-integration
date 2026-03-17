@@ -1,0 +1,12 @@
+.import-page-content{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.import-page-navigation{
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}

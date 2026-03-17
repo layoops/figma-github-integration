@@ -1,12 +1,11 @@
-import type { ProjectContentCounts } from '../project-content';
+import type { CountContentTypesResult } from '../project-content';
 
-import { useWidgetTranslation } from '../../../../shared/lib/hooks';
-import { Badge, CustomText, EntityField, IssueContentBlock } from '../../../../shared/ui';
+import { Badge, CustomText, IssueContentBody, IssueField } from '../../../../shared/ui/components';
 import { AutoLayout } from '../../../../widget-components';
 
-type ProjectOverviewContentProps = {
-  contentCount?: ProjectContentCounts;
-} & AutoLayoutProps;
+interface ProjectOverviewContentProps extends AutoLayoutProps {
+  contentCount?: CountContentTypesResult;
+}
 
 function splitCamelCase(str: string): string {
   const result = str.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
@@ -15,7 +14,7 @@ function splitCamelCase(str: string): string {
 
 const ProjectOverviewField = ({ leftText, rightText }: { leftText: string; rightText: string }) => {
   return (
-    <EntityField
+    <IssueField
       left={{
         children: (
           <AutoLayout padding={{ top: 4 }} width="fill-parent">
@@ -34,23 +33,18 @@ const ProjectOverviewField = ({ leftText, rightText }: { leftText: string; right
 };
 
 export const ProjectOverviewSection = ({ contentCount, ...rest }: ProjectOverviewContentProps) => {
-  const { t } = useWidgetTranslation();
   const { totalContent, typeCounts, completedTasks } = contentCount ?? {};
-
   return (
-    <IssueContentBlock {...rest}>
-      <ProjectOverviewField leftText={t('widget.taskProgress')} rightText={String(totalContent)} />
+    <IssueContentBody {...rest}>
+      <ProjectOverviewField leftText="Task progress" rightText={String(totalContent)} />
       {Object.entries(typeCounts).map(([type, count]) => (
         <ProjectOverviewField
-          key={`project-overflow-field-${type}`}
+          key={type}
           leftText={splitCamelCase(type)}
           rightText={String(count)}
         />
       ))}
-      <ProjectOverviewField
-        leftText={t('widget.completedIssues')}
-        rightText={String(completedTasks)}
-      />
-    </IssueContentBlock>
+      <ProjectOverviewField leftText="Completed Issues" rightText={String(completedTasks)} />
+    </IssueContentBody>
   );
 };

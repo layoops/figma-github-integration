@@ -1,1 +1,1 @@
-export { IssueContentPreview, ProjectContentPreview } from './ui';
+export * from './ui';

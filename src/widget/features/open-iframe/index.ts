@@ -1,1 +1,1 @@
-export { openPluginCreateIssuePage, openPluginIndexPage, openPluginSettingsPage } from './model';
+export * from './model';

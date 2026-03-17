@@ -5,7 +5,3 @@ export const githubPatterns = {
   pullRequest: /https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)/,
   project: /https:\/\/github\.com\/(users|orgs)\/([^/]+)\/projects\/(\d+)/,
 };
-
-export const githubQuerySearchPatterns = {
-  repo: /\brepo:[^/\s]+\/[^/\s]+\b/i,
-};

@@ -1,0 +1,7 @@
+.form-title {
+  display: flex;
+  gap: 2px;
+  color: var(--fg-muted);
+  font-size: 16px;
+  line-height: 22px;
+}
