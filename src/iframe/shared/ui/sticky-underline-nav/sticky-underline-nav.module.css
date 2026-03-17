@@ -1,0 +1,6 @@
+.sticky-underline-nav {
+  position: sticky;
+  top: 0;
+  background: var(--bgColor-default);
+  z-index: 1;
+}

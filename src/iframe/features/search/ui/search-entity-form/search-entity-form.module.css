@@ -1,0 +1,10 @@
+.search-input-with-create-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.input-validation-text {
+  text-align: left;
+}

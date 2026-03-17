@@ -8,7 +8,8 @@ export type GithubPresetColors =
   | 'YELLOW'
   | 'ORANGE';
 
-export type GithubEntityType = 'issue' | 'project' | 'pull-request';
+export type GithubEntityType = 'issue' | 'project' | 'pullRequest';
+
 export type GithubEntity = {
   entityType: GithubEntityType;
   entity: { id: string; title: string };
