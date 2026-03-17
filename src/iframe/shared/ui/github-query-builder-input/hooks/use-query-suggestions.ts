@@ -1,7 +1,7 @@
 import type { SuggestionConfig } from '../lib/types';
 import type { RefObject } from 'react';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type UseQuerySuggestionsProps<K extends string = string> = {
   containerRef: RefObject<HTMLDivElement | null>;
@@ -28,6 +28,24 @@ export const useQuerySuggestions = <K extends string = string>({
     return suggestionsConfig.keys.join('|');
   }, [suggestionsConfig]);
 
+  const filteredItems = useMemo(() => {
+    if (!suggestionsConfig || !activeKey) {
+      return [];
+    }
+    const items = suggestionsConfig.values[activeKey];
+    if (!items) {
+      return [];
+    }
+    return items.filter((v) => v.toLowerCase().startsWith(filterText.toLowerCase()));
+  }, [activeKey, filterText, suggestionsConfig]);
+
+  useEffect(() => {
+    setSelectedIndex((prev) => {
+      if (filteredItems.length === 0) return 0;
+      return Math.min(prev, filteredItems.length - 1);
+    });
+  }, [filteredItems]);
+
   const checkContextAndPositionOverlay = useCallback(() => {
     if (!suggestionsConfig || !keysRegexPart || !containerRef.current || !editorRef.current) {
       setIsOpen(false);
@@ -48,8 +66,20 @@ export const useQuerySuggestions = <K extends string = string>({
     }
 
     const textNode = range.startContainer;
-    const textContent = textNode.textContent || '';
-    const cursorIndex = range.startOffset;
+
+    let textContent: string;
+    let cursorIndex: number;
+
+    if (textNode.nodeType === Node.TEXT_NODE) {
+      textContent = textNode.textContent || '';
+      cursorIndex = range.startOffset;
+    } else if (textNode === editorRef.current) {
+      textContent = editorRef.current.textContent || '';
+      cursorIndex = textContent.length;
+    } else {
+      setIsOpen(false);
+      return;
+    }
 
     const textBeforeCursor = textContent.slice(0, cursorIndex);
     const regex = new RegExp(`(?:^|\\s)(${keysRegexPart}):([^\\s]*)$`, 'i');
@@ -71,15 +101,39 @@ export const useQuerySuggestions = <K extends string = string>({
 
     setActiveKey(detectedKey);
     setFilterText(detectedValuePart);
-    setSelectedIndex(0);
+
+    setSelectedIndex((prev) => {
+      const filtered = suggestions.filter((v) =>
+        v.toLowerCase().startsWith(detectedValuePart.toLowerCase())
+      );
+      if (filtered.length === 0) return 0;
+      return Math.min(prev, filtered.length - 1);
+    });
 
     try {
       const colonIndex = cursorIndex - detectedValuePart.length - 1;
 
       if (colonIndex >= 0 && overlayAnchorRef.current && containerRef.current) {
+        let anchorNode: Node = textNode;
+        let anchorOffset = colonIndex;
+
+        if (textNode.nodeType !== Node.TEXT_NODE) {
+          const firstText = editorRef.current.firstChild;
+          if (firstText && firstText.nodeType === Node.TEXT_NODE) {
+            anchorNode = firstText;
+            anchorOffset = Math.min(colonIndex, (firstText.textContent || '').length);
+          } else {
+            setIsOpen(false);
+            return;
+          }
+        }
+
         const anchorRange = document.createRange();
-        anchorRange.setStart(textNode, colonIndex);
-        anchorRange.setEnd(textNode, colonIndex + 1);
+        anchorRange.setStart(anchorNode, anchorOffset);
+        anchorRange.setEnd(
+          anchorNode,
+          Math.min(anchorOffset + 1, (anchorNode.textContent || '').length)
+        );
 
         const charRect = anchorRange.getBoundingClientRect();
         const containerRect = containerRef.current.getBoundingClientRect();
@@ -96,17 +150,6 @@ export const useQuerySuggestions = <K extends string = string>({
       setIsOpen(false);
     }
   }, [suggestionsConfig, keysRegexPart, containerRef, editorRef, overlayAnchorRef]);
-
-  const filteredItems = useMemo(() => {
-    if (!suggestionsConfig || !activeKey) {
-      return [];
-    }
-    const items = suggestionsConfig.values[activeKey];
-    if (!items) {
-      return [];
-    }
-    return items.filter((v) => v.toLowerCase().startsWith(filterText.toLowerCase()));
-  }, [activeKey, filterText, suggestionsConfig]);
 
   return {
     isOpen,

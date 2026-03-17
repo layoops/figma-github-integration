@@ -75,7 +75,6 @@ ESLint enforces FSD boundaries via the `eslint-plugin-feature-sliced` plugin.
 | Concern | Library |
 |---|---|
 | UI components | Primer React (GitHub design system) |
-| Styling | Styled Components + Primer CSS |
 | Data fetching | TanStack React Query v5 |
 | Routing | TanStack Router v1 |
 | Forms | TanStack React Form + Valibot |
