@@ -6,6 +6,7 @@ node_modules
 out/
 dist/
 code.js
+.env
 
 .eslintcache
 package-lock.json
