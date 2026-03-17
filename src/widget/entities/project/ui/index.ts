@@ -1,2 +1,2 @@
-export * from './project-content';
-export * from './project-sections';
+export { ProjectContent, type ProjectContentCounts } from './project-content';
+export { ProjectOverviewSection } from './project-sections';

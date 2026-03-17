@@ -1,1 +1,1 @@
-export * from './project-overview-section';
+export { ProjectOverviewSection } from './project-overview-section';
