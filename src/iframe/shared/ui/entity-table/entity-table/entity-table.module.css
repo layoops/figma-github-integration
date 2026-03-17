@@ -1,0 +1,16 @@
+.selectionCell {
+  display: flex;
+  justify-content: center;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-header {
+  min-height: 28px;
+  display: flex;
+  justify-content: space-between;
+}

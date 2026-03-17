@@ -1,0 +1,33 @@
+.entityCell {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+
+  .statusLabel {
+    margin-top: 3px;
+  }
+
+  .rightContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
+    .topContent {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: 4px;
+      row-gap: 2px;
+    }
+
+    .labels {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .bottomContent {
+      color: var(--fgColor-muted);
+    }
+  }
+}
