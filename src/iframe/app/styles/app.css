@@ -1,7 +1,27 @@
-@import url(./reset.css);
+@import '@primer/css/dist/utilities.css';
+@import '@primer/primitives/dist/css/primitives.css';
+
+@import '@primer/primitives/dist/css/functional/themes/light.css';
+@import '@primer/primitives/dist/css/functional/themes/dark.css';
+
+button {
+  border: none;
+  background-color: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+p {
+  margin: 0;
+}
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -14,16 +34,6 @@
   --bg-muted: #f6f8fa;
 }
 
-body {
-  background-color: var(--bg-default);
-  color: var(--fg-default);
-  margin: 0;
-  display: grid;
-}
-
-.full-width {
-  width: 100% !important;
-}
 @media (prefers-color-scheme: dark) {
   :root {
     --fg-default: #e6edf3;
@@ -35,14 +45,65 @@ body {
   }
 }
 
+body {
+  background-color: var(--bgColor-default);
+  color: var(--fg-default);
+  margin: 0;
+  display: grid;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
 .hidden {
   display: none !important;
 }
 
-.invincible {
+.invisible {
   visibility: hidden !important;
+}
+
+.content-invisible {
+  content-visibility: hidden;
+  contain-intrinsic-size: 0;
+  height: auto !important;
 }
 
 .visible {
   visibility: visible;
+}
+
+.modal-container {
+  position: absolute;
+}
+
+code {
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace !important;
+  font-size: 0.9em;
+}
+
+.code-list {
+  margin-top: 8px;
+  padding-left: 20px;
+
+  li:has(code) {
+    list-style-type: disc;
+
+    code {
+      overflow-wrap: break-word;
+      background-color: #424242;
+    }
+  }
+}
+
+.muted-text {
+  color: var(--fgColor-muted);
 }
