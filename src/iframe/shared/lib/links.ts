@@ -1,5 +1,5 @@
 export const querySearchExamplesLink =
-  'https://github.com/layooops/figma-github-integration/blob/main/documentation/query-search-examples.md';
+  'https://github.com/layoops/figma-github-integration/blob/main/documentation/query-search-examples.md';
 
 export const githubProjectsFieldsDocumentationLink =
   'https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields';
