@@ -1,15 +1,15 @@
 import type { GithubEntity } from '../../../shared/lib/types/github';
 import type { DraftIssue, Issue } from '@octokit/graphql-schema';
 
-import { resyncIssue } from '../../../features/import/model/resync-issue';
-import { Avatar, Badge, CustomText, IconButton } from '../../../shared/ui/components';
+import { resyncEntity } from '../../../features/import';
+import { Avatar, Badge, CustomText, IconButton } from '../../../shared/ui';
 import { AutoLayout } from '../../../widget-components';
 
-interface IssueContentPreviewProps extends AutoLayoutProps {
+type IssueContentPreviewProps = {
   issue: Issue | DraftIssue;
   githubEntity: GithubEntity;
   openedMore: boolean;
-}
+} & AutoLayoutProps;
 
 export const IssueContentPreview = ({
   issue,
@@ -25,18 +25,18 @@ export const IssueContentPreview = ({
   return (
     <AutoLayout
       direction="vertical"
-      verticalAlignItems={'center'}
+      verticalAlignItems="center"
       spacing={12}
       width="fill-parent"
       {...rest}
     >
-      <CustomText width={'fill-parent'} size="medium">
+      <CustomText width="fill-parent" size="medium">
         {minimizedTitle}
       </CustomText>
       <AutoLayout
         hidden={openedMore}
         direction="horizontal"
-        verticalAlignItems={'center'}
+        verticalAlignItems="center"
         spacing={6}
         width="fill-parent"
       >
@@ -48,14 +48,18 @@ export const IssueContentPreview = ({
             width="fill-parent"
           >
             {labels.nodes.map((label) => (
-              <Badge key={'issue-header' + label.name} text={label.name} color={label.color} />
+              <Badge
+                key={`issue-header-label-${label.name}`}
+                text={label.name}
+                color={label.color}
+              />
             ))}
           </AutoLayout>
         )}
 
         <AutoLayout
           direction="horizontal"
-          horizontalAlignItems={'end'}
+          horizontalAlignItems="end"
           spacing={8}
           width={!labels?.nodes?.length ? 'fill-parent' : 'hug-contents'}
           height="hug-contents"
@@ -65,7 +69,7 @@ export const IssueContentPreview = ({
             (assignee, index) =>
               index < 3 && (
                 <Avatar
-                  key={assignee.name + 'issue-header'}
+                  key={`issue-header-assignee-${assignee.name}`}
                   avatarUrl={assignee.avatarUrl}
                   size="extra-small"
                 />
@@ -73,7 +77,7 @@ export const IssueContentPreview = ({
           )}
           <IconButton
             onClick={() =>
-              resyncIssue({
+              resyncEntity({
                 githubEntity: githubEntity,
               })
             }

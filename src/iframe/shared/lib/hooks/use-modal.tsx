@@ -7,9 +7,6 @@ export type useModalReturnType = {
 };
 
 export type useModalProps = {
-  /**
-   * Initial state of the modal
-   */
   defaultVisible?: boolean;
 };
 

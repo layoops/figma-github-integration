@@ -1,7 +1,15 @@
-export function partiallyHideText(password: string): string {
-  if (!password) return '';
+export function partiallyHideText(value: string): string {
+  if (!value) {
+    return '';
+  }
 
-  const visibleChars = password.slice(0, 4);
-  const hiddenChars = '*'.repeat(password.length - 4);
-  return visibleChars + hiddenChars;
+  if (value.length <= 8) {
+    return value;
+  }
+
+  const start = value.slice(0, 4);
+  const end = value.slice(-4);
+  const hidden = '•'.repeat(value.length - 8);
+
+  return `${start}${hidden}${end}`;
 }

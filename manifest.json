@@ -7,10 +7,20 @@
   "ui": {
     "main": "dist/index.html"
   },
-  "editorType": ["figma", "figjam"],
+  "editorType": [
+    "figma",
+    "figjam"
+  ],
   "containsWidget": true,
+  "documentAccess": "dynamic-page",
   "networkAccess": {
-    "allowedDomains": ["https://api.github.com", "https://avatars.githubusercontent.com"],
+    "allowedDomains": [
+      "https://github.com",
+      "https://api.github.com",
+      "https://avatars.githubusercontent.com",
+      "https://private-user-images.githubusercontent.com",
+      "https://fgi.layoops.com"
+    ],
     "reasoning": "GitHub API for data and avatar service for user avatars."
   }
 }
