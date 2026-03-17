@@ -134,6 +134,23 @@ export type IframeLocalizationKeys = {
       caption: string;
       placeholder: string;
     };
+    labelsField: {
+      label: string;
+      caption: string;
+      loading: string;
+      placeholder: string;
+      filterPlaceholder: string;
+      emptyTitle: string;
+      emptyBody: string;
+      selection: {
+        stats: string;
+        stats_zero?: string;
+        stats_one?: string;
+        stats_few?: string;
+        stats_many?: string;
+        stats_other?: string;
+      };
+    };
   };
 
   issuePage: {

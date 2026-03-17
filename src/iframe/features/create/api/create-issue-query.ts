@@ -6,8 +6,8 @@ import {
 
 export const CREATE_ISSUE_QUERY = `
 ${GQL_ISSUE_FRAGMENT}
-mutation CreateIssue ($id: ID!, $title: String!, $body: String!, ${GQL_ISSUE_DEFAULT_VARIABLES}) {
-  createIssue(input: {repositoryId: $id, title: $title, body: $body}) {
+mutation CreateIssue ($id: ID!, $title: String!, $body: String!, $labelIds: [ID!], ${GQL_ISSUE_DEFAULT_VARIABLES}) {
+  createIssue(input: {repositoryId: $id, title: $title, body: $body, labelIds: $labelIds}) {
     issue {
       ...IssueFragment
     }

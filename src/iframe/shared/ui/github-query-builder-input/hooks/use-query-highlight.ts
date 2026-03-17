@@ -3,6 +3,8 @@ import type { RefObject } from 'react';
 
 import { useCallback, useEffect, useMemo } from 'react';
 
+import { normalizeEditorContent } from '../lib/helpers';
+
 export const useQueryHighlight = <K extends string = string>({
   editorRef,
   highlightName,
@@ -29,6 +31,8 @@ export const useQueryHighlight = <K extends string = string>({
       return;
     }
 
+    normalizeEditorContent(editorRef.current);
+
     const textNode = editorRef.current.firstChild;
 
     if (!textNode || textNode.nodeType !== Node.TEXT_NODE) {
@@ -37,6 +41,12 @@ export const useQueryHighlight = <K extends string = string>({
     }
 
     const text = textNode.textContent || '';
+
+    if (text.length === 0) {
+      CSS.highlights.delete(highlightName);
+      return;
+    }
+
     const ranges: Range[] = [];
     const regex = new RegExp(`\\b(${keysRegexPart}):([^\\s]*)`, 'gi');
 
@@ -50,6 +60,8 @@ export const useQueryHighlight = <K extends string = string>({
       const start = match.index + keyStr.length + 1;
       const end = start + valueStr.length;
 
+      if (start < 0 || end > text.length || start >= end) continue;
+
       try {
         const range = new Range();
         range.setStart(textNode, start);
@@ -60,7 +72,11 @@ export const useQueryHighlight = <K extends string = string>({
       }
     }
 
-    CSS.highlights.set(highlightName, new Highlight(...ranges));
+    if (ranges.length > 0) {
+      CSS.highlights.set(highlightName, new Highlight(...ranges));
+    } else {
+      CSS.highlights.delete(highlightName);
+    }
   }, [editorRef, highlightName, keysRegexPart]);
 
   useEffect(() => {

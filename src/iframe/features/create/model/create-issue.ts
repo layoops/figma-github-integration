@@ -9,6 +9,7 @@ type GetIssueProps = {
     id: string;
     title: string;
     body: string;
+    labelIds?: string[];
   };
   token: string;
 };
@@ -19,7 +20,10 @@ type IssueQueryResponse = {
   };
 };
 
-export async function createIssue({ variables: { id, title, body }, token }: GetIssueProps) {
+export async function createIssue({
+  variables: { id, title, body, labelIds },
+  token,
+}: GetIssueProps) {
   const response = await githubRequest<IssueQueryResponse>({
     query: CREATE_ISSUE_QUERY,
     variables: {
@@ -30,6 +34,7 @@ export async function createIssue({ variables: { id, title, body }, token }: Get
       includeDevelopment: true,
       title: title,
       body: body,
+      labelIds: labelIds?.length ? labelIds : undefined,
     },
     token,
   });

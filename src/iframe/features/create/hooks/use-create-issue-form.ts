@@ -12,6 +12,7 @@ export type CreateIssueFormValues = {
   target: string;
   title: string;
   body: string;
+  labelIds: string[];
 };
 
 type UseCreateIssueFormOptions = {
@@ -35,6 +36,7 @@ export const useCreateIssueForm = ({ defaultTarget = '' }: UseCreateIssueFormOpt
     ),
     title: v.pipe(v.string(), v.trim(), v.minLength(1, t('validation.required'))),
     body: v.string(),
+    labelIds: v.array(v.string()),
   });
 
   return useAppForm({
@@ -42,6 +44,7 @@ export const useCreateIssueForm = ({ defaultTarget = '' }: UseCreateIssueFormOpt
       target: defaultTarget,
       title: '',
       body: '',
+      labelIds: [],
     } as CreateIssueFormValues,
     validators: {
       onSubmitAsync: schema,
@@ -69,7 +72,7 @@ export const useCreateIssueForm = ({ defaultTarget = '' }: UseCreateIssueFormOpt
             token: githubAccessToken,
           })
         : await createIssue({
-            variables: { id, title: value.title, body: value.body },
+            variables: { id, title: value.title, body: value.body, labelIds: value.labelIds },
             token: githubAccessToken,
           });
 
