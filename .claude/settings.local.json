@@ -10,6 +10,8 @@
       "Bash(npm install:*)",
       "Bash(npm show:*)",
       "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)"
     ]
