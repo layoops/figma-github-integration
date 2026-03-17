@@ -3,13 +3,12 @@
     "jsx": "react",
     "jsxFactory": "figma.widget.h",
     "jsxFragmentFactory": "figma.widget.Fragment",
-    "target": "es2017",
-    "lib": ["es2017"],
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "strict": false,
     "typeRoots": [
       "../../node_modules/@figma",
     ],
-
     "moduleResolution": "node"
   },
   "exclude": ["../../node_modules/react"]

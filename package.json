@@ -1,18 +1,18 @@
 {
   "name": "figma-github-integration-widget",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Figma widget integrating GitHub for seamless project management within your design workflow.",
-  "homepage": "https://github.com/layooops/figma-github-integration",
+  "homepage": "https://github.com/layoops/figma-github-integration",
   "repository": {
     "type": "git",
-    "url": "https://github.com/layooops/figma-github-integration.git"
+    "url": "https://github.com/layoops/figma-github-integration.git"
   },
   "bugs": {
-    "url": "https://github.com/layooops/figma-github-integration/issues"
+    "url": "https://github.com/layoops/figma-github-integration/issues"
   },
   "author": {
-    "name": "Vitalii Astahov (layooops)",
-    "url": "https://layooops.com"
+    "name": "Vitalii Astakhov (layoops)",
+    "url": "https://layoops.com"
   },
   "keywords": [
     "figma",
@@ -20,52 +20,77 @@
     "github",
     "project-management"
   ],
+  "type": "module",
   "license": "MIT",
   "scripts": {
-    "widget:build": "node --loader ts-node/esm ./esbuild.config.ts",
-    "widget:dev": "NODE_ENV=development npm run widget:build",
+    "widget:build": "vite build --config vite.widget.config.js",
+    "widget:dev": "vite build --watch --config vite.widget.config.js --mode development",
     "iframe:build": "vite build",
     "iframe:dev": "vite build --watch",
-    "tsc:widget": "tsc --noEmit -p src/widget",
-    "tsc:iframe": "tsc --noEmit -p src/iframe ",
-    "tsc:dev": "concurrently -n widget,iframe \"yarn run tsc:widget -- --watch --preserveWatchOutput\" \"yarn run tsc:iframe -- --watch --preserveWatchOutput\"",
+    "tsc:dev": "concurrently -n widget,iframe \"npm run tsc:widget -- --watch --preserveWatchOutput\" \"npm run tsc:iframe -- --watch --preserveWatchOutput\"",
     "dev": "concurrently 'npm:widget:dev' 'npm:iframe:dev'",
     "build": "npm run iframe:build && npm run widget:build",
     "format": "prettier --config --write \"./**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint src/ --fix --cache --quiet --ext .js,.jsx,.ts,.tsx"
+    "lint:fix": "eslint src/ --fix --cache --quiet --ext .js,.jsx,.ts,.tsx",
+    "lint:tsc": "npm run lint:tsc:widget && npm run lint:tsc:iframe",
+    "lint:tsc:widget": "tsc --noEmit -p src/widget",
+    "lint:tsc:iframe": "tsc --noEmit -p src/iframe"
   },
   "dependencies": {
-    "clsx": "^2.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.18.0"
+    "@octokit/core": "^7.0.6",
+    "@octokit/plugin-paginate-graphql": "^6.0.0",
+    "@octokit/request": "^10.0.8",
+    "@primer/css": "^22.1.1",
+    "@primer/primitives": "11.5.1",
+    "@primer/react": "38.15.1",
+    "@tanstack/react-form": "^1.28.5",
+    "@tanstack/react-hotkeys": "^0.4.1",
+    "@tanstack/react-query": "^5.90.21",
+    "@tanstack/react-router": "^1.167.4",
+    "@tanstack/router-plugin": "^1.166.13",
+    "clsx": "^2.1.1",
+    "graphql-request": "^7.4.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-is": "^19.2.4",
+    "styled-components": "^6.3.11",
+    "valibot": "^1.3.0"
   },
   "devDependencies": {
     "@conarti/eslint-plugin-feature-sliced": "^1.0.5",
-    "@figma/plugin-typings": "^1.79.0",
-    "@figma/widget-typings": "^1.9.1",
-    "@octokit/graphql-schema": "^14.40.1",
-    "@types/node": "^20.8.8",
-    "@types/react": "^18.2.33",
-    "@types/react-dom": "^18.2.14",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@vitejs/plugin-react": "^4.1.0",
-    "concurrently": "^8.2.2",
-    "esbuild": "^0.19.5",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-check-file": "^2.6.2",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-no-secrets": "^0.8.9",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2",
-    "typescript-plugin-css-modules": "^5.0.2",
-    "vite": "^4.5.0",
-    "vite-plugin-singlefile": "^0.13.5",
-    "vite-tsconfig-paths": "^4.2.1"
+    "@eslint/js": "^10.0.1",
+    "@figma/eslint-plugin-figma-plugins": "1.0.0",
+    "@figma/plugin-typings": "^1.123.0",
+    "@figma/widget-typings": "^1.12.1",
+    "@octokit/graphql-schema": "^15.26.1",
+    "@tanstack/eslint-plugin-router": "^1.161.6",
+    "@types/node": "^25.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.57.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-check-file": "^3.3.1",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-no-secrets": "^2.3.3",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "jiti": "^2.6.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1",
+    "typescript-plugin-css-modules": "^5.2.0",
+    "vite": "^8.0.0",
+    "vite-plugin-singlefile": "^2.3.2"
+  },
+  "overrides": {
+    "vite-plugin-singlefile": {
+      "vite": "^8.0.0"
+    }
   }
 }
