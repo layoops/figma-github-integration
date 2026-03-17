@@ -1,2 +1,1 @@
-export * from './lib/settings.interface';
-export * from './ui';
+export { SettingsForm } from './ui';
