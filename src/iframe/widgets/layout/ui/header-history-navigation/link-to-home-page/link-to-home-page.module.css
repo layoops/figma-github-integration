@@ -1,0 +1,11 @@
+.link-to-home-page {
+  color: unset;
+  cursor: pointer;
+  border-radius: 50%;
+
+  &:focus-visible {
+    box-shadow: none;
+    outline: 2px solid var(--focus-outlineColor, var(--color-accent-fg));
+    outline-offset: -2px;
+  }
+}
