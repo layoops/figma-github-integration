@@ -137,6 +137,23 @@ export const iframeEn: IframeLocalizationKeys = {
       caption: 'Detailed issue description',
       placeholder: 'Enter issue description',
     },
+    labelsField: {
+      label: 'Select labels',
+      caption: 'Select labels to apply to this issue',
+      loading: 'Loading labels…',
+      placeholder: 'Select labels',
+      filterPlaceholder: 'Filter labels',
+      emptyTitle: 'No labels found',
+      emptyBody: 'Try a different search term',
+      selection: {
+        stats_zero: 'None selected',
+        stats: '{selectedCount} label selected',
+        stats_one: '{selectedCount} label selected',
+        stats_few: '{selectedCount} labels selected',
+        stats_many: '{selectedCount} labels selected',
+        stats_other: '{selectedCount} labels selected',
+      },
+    },
   },
 
   issuePage: {

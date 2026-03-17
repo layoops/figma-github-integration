@@ -1,6 +1,6 @@
 import type { SuggestionConfig } from '@/shared/ui';
 
-const suggestionQueryKeys = ['repo', 'type', 'state', 'sort'] as const;
+const suggestionQueryKeys = ['repo', 'type', 'state', 'sort', 'label'] as const;
 type SuggestionQueryKey = (typeof suggestionQueryKeys)[number];
 
 export const searchEntityQuerySuggestionsConfig = {

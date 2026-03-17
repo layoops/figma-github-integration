@@ -138,6 +138,23 @@ export const iframeRu: IframeLocalizationKeys = {
       caption: 'Подробное описание задачи',
       placeholder: 'Введите описание задачи',
     },
+    labelsField: {
+      label: 'Выберете метки',
+      caption: 'Выберите метки для этой задачи',
+      loading: 'Загрузка меток…',
+      placeholder: 'Выберите метки',
+      filterPlaceholder: 'Фильтр меток',
+      emptyTitle: 'Метки не найдены',
+      emptyBody: 'Попробуйте другой поисковый запрос',
+      selection: {
+        stats: 'Выбрано {selectedCount} метки',
+        stats_zero: 'Ничего не выбрано',
+        stats_one: 'Выбрана {selectedCount} метка',
+        stats_few: 'Выбрано {selectedCount} метки',
+        stats_many: 'Выбрано {selectedCount} меток',
+        stats_other: 'Выбрано {selectedCount} метки',
+      },
+    },
   },
 
   issuePage: {
@@ -174,7 +191,7 @@ export const iframeRu: IframeLocalizationKeys = {
         title: 'Импортировать',
       },
       importWithProject: {
-        title: 'Также импортировать проект',
+        title: 'Импортировать с проектом',
       },
     },
   },

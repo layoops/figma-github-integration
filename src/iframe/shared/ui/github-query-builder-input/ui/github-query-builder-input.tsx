@@ -17,7 +17,7 @@ import clsx from 'clsx';
 
 import { useHighlightStyles, useQueryHighlight, useQuerySuggestions } from '../hooks';
 import { HIGHLIGHT_BASE_NAME } from '../lib/constants';
-import { cleanCssId } from '../lib/helpers';
+import { cleanCssId, normalizeEditorContent } from '../lib/helpers';
 import classes from './github-query-builder-input.module.css';
 
 export type GithubQueryBuilderInputProps<K extends string = string> = {
@@ -44,6 +44,8 @@ export function GithubQueryBuilderInput<K extends string = string>({
 }: GithubQueryBuilderInputProps<K>) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<HTMLDivElement | null>(null);
+
+  const isSyncingRef = useRef(false);
 
   const mergedRef = useCallback(
     (el: HTMLDivElement | null) => {
@@ -79,29 +81,37 @@ export function GithubQueryBuilderInput<K extends string = string>({
         return;
       }
 
+      const editor = editorRef.current;
+
+      normalizeEditorContent(editor);
+
+      editor.focus();
+
       const selection = window.getSelection();
-      if (!selection) {
+      if (!selection || selection.rangeCount === 0) {
         return;
       }
 
-      editorRef.current.focus();
+      const textNode = editor.firstChild;
+      if (!textNode || textNode.nodeType !== Node.TEXT_NODE) {
+        return;
+      }
 
       const range = selection.getRangeAt(0);
-      const textNode = range.startContainer;
+      const cursorIndex =
+        range.startContainer === textNode ? range.startOffset : (textNode.textContent || '').length;
       const textContent = textNode.textContent || '';
-      const cursorIndex = range.startOffset;
-
       const textBeforeCursor = textContent.slice(0, cursorIndex);
-      const regex = new RegExp(`(?:^|\\s)(${keysRegexPart}):([^\\s]*)$`, 'i');
 
+      const regex = new RegExp(`(?:^|\\s)(${keysRegexPart}):([^\\s]*)$`, 'i');
       const match = regex.exec(textBeforeCursor);
       if (!match) {
+        setIsOpen(false);
         return;
       }
 
       const typedValue = match[2];
       const startReplace = cursorIndex - typedValue.length;
-
       const replacement = suggestedValue + ' ';
       const newContent =
         textContent.slice(0, startReplace) + replacement + textContent.slice(cursorIndex);
@@ -110,7 +120,7 @@ export function GithubQueryBuilderInput<K extends string = string>({
       onChange?.(newContent);
 
       try {
-        const newCursorPos = startReplace + replacement.length;
+        const newCursorPos = Math.min(startReplace + replacement.length, newContent.length);
         const newRange = document.createRange();
         newRange.setStart(textNode, newCursorPos);
         newRange.setEnd(textNode, newCursorPos);
@@ -128,6 +138,10 @@ export function GithubQueryBuilderInput<K extends string = string>({
 
   const handleInput = useCallback(
     (e: FormEvent<HTMLDivElement>) => {
+      if (isSyncingRef.current) return;
+
+      normalizeEditorContent(e.currentTarget);
+
       const newValue = e.currentTarget.textContent || '';
       updateHighlights();
       checkContextAndPositionOverlay();
@@ -159,11 +173,45 @@ export function GithubQueryBuilderInput<K extends string = string>({
       selection.removeAllRanges();
       selection.addRange(range);
 
+      normalizeEditorContent(editorRef.current);
+
+      const mergedTextNode = editorRef.current.firstChild;
+      if (mergedTextNode && mergedTextNode.nodeType === Node.TEXT_NODE) {
+        const fullText = mergedTextNode.textContent || '';
+
+        try {
+          const sel = window.getSelection();
+          if (sel) {
+            if (sel.rangeCount === 0 || sel.getRangeAt(0).startContainer !== mergedTextNode) {
+              const newRange = document.createRange();
+              newRange.setStart(mergedTextNode, fullText.length);
+              newRange.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(newRange);
+            }
+          }
+        } catch {
+          // ignore
+        }
+      }
+
       const newValue = editorRef.current.textContent || '';
       onChange?.(newValue);
       updateHighlights();
+      checkContextAndPositionOverlay();
     },
-    [onChange, updateHighlights]
+    [onChange, updateHighlights, checkContextAndPositionOverlay]
+  );
+
+  const handleOverlayClose = useCallback(
+    (gesture?: string) => {
+      setIsOpen(false);
+
+      if (gesture === 'click-outside' || gesture === 'escape') {
+        editorRef.current?.focus();
+      }
+    },
+    [setIsOpen]
   );
 
   const handleKeyDown = useCallback(
@@ -183,12 +231,25 @@ export function GithubQueryBuilderInput<K extends string = string>({
 
         if (e.key === 'Enter') {
           e.preventDefault();
-          applySuggestion(filteredItems[selectedIndex]);
+          if (selectedIndex >= 0 && selectedIndex < filteredItems.length) {
+            applySuggestion(filteredItems[selectedIndex]);
+          }
           return;
         }
 
-        if (e.key === 'Escape' || e.key === 'Tab') {
+        if (e.key === 'Escape') {
+          e.preventDefault();
           setIsOpen(false);
+          return;
+        }
+
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          if (selectedIndex >= 0 && selectedIndex < filteredItems.length) {
+            applySuggestion(filteredItems[selectedIndex]);
+          } else {
+            setIsOpen(false);
+          }
           return;
         }
       }
@@ -219,8 +280,34 @@ export function GithubQueryBuilderInput<K extends string = string>({
     const currentText = editorRef.current.textContent || '';
     if (currentText !== value) {
       if (document.activeElement !== editorRef.current || currentText === '') {
+        isSyncingRef.current = true;
+
+        const selection = window.getSelection();
+        const wasFocused = document.activeElement === editorRef.current;
+        let savedOffset = 0;
+
+        if (wasFocused && selection && selection.rangeCount > 0) {
+          savedOffset = selection.getRangeAt(0).startOffset;
+        }
+
         editorRef.current.textContent = value;
         updateHighlights();
+
+        if (wasFocused && editorRef.current.firstChild) {
+          try {
+            const maxOffset = (editorRef.current.firstChild.textContent || '').length;
+            const offset = Math.min(savedOffset, maxOffset);
+            const range = document.createRange();
+            range.setStart(editorRef.current.firstChild, offset);
+            range.collapse(true);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+          } catch {
+            // ignore
+          }
+        }
+
+        isSyncingRef.current = false;
       }
     }
   }, [value, updateHighlights]);
@@ -260,34 +347,39 @@ export function GithubQueryBuilderInput<K extends string = string>({
         data-placeholder={placeholder}
       />
 
-      {isOpen && filteredItems.length > 0 && (
-        <AnchoredOverlay
-          open
-          anchorRef={overlayAnchorRef}
-          renderAnchor={null}
-          align="start"
-          side="outside-bottom"
-          focusTrapSettings={{ disabled: true }}
-          focusZoneSettings={{ disabled: true }}
-          overlayProps={{
-            preventFocusOnOpen: true,
-            onClickOutside: () => setIsOpen(false),
-          }}
-        >
-          <ActionList selectionVariant="single">
-            {filteredItems.map((item, index) => (
-              <ActionList.Item
-                key={item}
-                active={index === selectedIndex}
-                onSelect={() => applySuggestion(item)}
-                onMouseDown={(e) => e.preventDefault()}
-              >
-                {item}
-              </ActionList.Item>
-            ))}
-          </ActionList>
-        </AnchoredOverlay>
-      )}
+      <AnchoredOverlay
+        open={isOpen && filteredItems.length > 0}
+        anchorRef={overlayAnchorRef}
+        renderAnchor={null}
+        onClose={handleOverlayClose}
+        align="start"
+        side="outside-bottom"
+        focusTrapSettings={{ disabled: true }}
+        focusZoneSettings={{ disabled: true }}
+        overlayProps={{
+          preventFocusOnOpen: true,
+          returnFocusRef: editorRef,
+        }}
+      >
+        <ActionList selectionVariant="single">
+          {filteredItems.map((item, index) => (
+            <ActionList.Item
+              key={item}
+              active={index === selectedIndex}
+              onSelect={(e) => {
+                e.preventDefault();
+                applySuggestion(item);
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault();
+              }}
+              onMouseEnter={() => setSelectedIndex(index)}
+            >
+              {item}
+            </ActionList.Item>
+          ))}
+        </ActionList>
+      </AnchoredOverlay>
     </div>
   );
 }
