@@ -1,0 +1,20 @@
+.tab {
+  display: flex;
+  flex-direction: column;
+    padding-bottom: 8px;
+    position: relative;
+}
+
+.tab-state-default{
+
+}
+
+.tab-state-selected::after{
+    content: "";
+    border-radius: 6px;
+    position: absolute;
+    top: calc(100% - 2px);
+    background: #EA9375;
+    height: 2px;
+    width: 100%;
+}

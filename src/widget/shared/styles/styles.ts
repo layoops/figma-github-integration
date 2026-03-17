@@ -1,19 +1,35 @@
-import type { WidgetTheme } from './themes';
-
-import { themes } from './themes';
+import { Colors } from './colors';
 
 type Sizing = 'extra-small' | 'small' | 'medium' | 'large' | 'extra-large';
 
-export const getColorStyles = (theme: WidgetTheme) => ({
-  surface: themes[theme].surface,
-  border: themes[theme].border.default,
-  borderMuted: themes[theme].border.muted,
-  fg: themes[theme].fg,
-  state: themes[theme].state,
-  validation: themes[theme].validation,
-  button: themes[theme].button,
-  header: themes[theme].header,
-});
+export const ColorStyles = {
+  surface: {
+    background: Colors.white,
+  },
+  border: '#e8ebef',
+  validation: {
+    default: {
+      text: Colors.black,
+      bg: Colors.white,
+    },
+    inverted: {
+      text: Colors.white,
+      bg: Colors.black,
+    },
+    error: {
+      text: Colors.red[500],
+      bg: Colors.red[50],
+    },
+    warning: {
+      text: Colors.orange[500],
+      bg: Colors.orange[50],
+    },
+    disabled: {
+      text: Colors.gray[600],
+      bg: Colors.gray[100],
+    },
+  },
+};
 
 type TextStylesTypes = {
   [key in Sizing]?: { size: number; lineHeight: number };

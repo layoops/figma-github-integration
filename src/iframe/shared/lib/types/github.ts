@@ -1,21 +1,9 @@
-export type GithubId = {
+export interface GithubId {
   id: string;
   title: string;
-  owner?: string;
-  name?: string;
-};
-
-export type GithubEntityType =
-  | 'issue'
-  | 'project'
-  | 'pull-request'
-  | 'repository'
-  | 'repository-issues'
-  | 'repository-pulls'
-  | 'repository-projects';
+}
 
 export type GithubEntity = {
-  entityType: GithubEntityType;
+  entityType: 'issue' | 'project' | 'pull-request' | 'repository';
   entity: GithubId;
-  originalUrl?: string;
 };

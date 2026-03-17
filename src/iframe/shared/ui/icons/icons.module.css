@@ -1,0 +1,16 @@
+.icon {
+  display: inline;
+}
+
+.icon-size-small {
+  width: 16px;
+  height: 16px;
+}
+.icon-size-medium {
+  width: 16px;
+  height: 16px;
+}
+.icon-size-large {
+  width: 24px;
+  height: 24px;
+}

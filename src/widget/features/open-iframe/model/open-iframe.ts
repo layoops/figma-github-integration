@@ -1,25 +1,23 @@
-import { ROUTES, ROUTES_MAP } from '../../../../global-shared/routes-map';
 import { openPluginUI } from '../../../shared/lib/helpers';
 
-export const openPluginIndexPage = () => {
+export const openImportIframe = () => {
   openPluginUI({
-    routeName: ROUTES_MAP[ROUTES.INDEX],
+    routeName: 'import',
+    props: {},
+    options: { visible: true },
+  });
+};
+export const openSettingsIframe = () => {
+  openPluginUI({
+    routeName: 'settings',
     props: {},
     options: { visible: true },
   });
 };
 
-export const openPluginCreateIssuePage = () => {
+export const openCreateIframe = () => {
   openPluginUI({
-    routeName: ROUTES_MAP[ROUTES.ISSUE_CREATE],
-    props: {},
-    options: { visible: true },
-  });
-};
-
-export const openPluginSettingsPage = () => {
-  openPluginUI({
-    routeName: ROUTES_MAP[ROUTES.SETTINGS],
+    routeName: 'create',
     props: {},
     options: { visible: true },
   });

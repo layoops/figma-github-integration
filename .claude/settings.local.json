@@ -4,9 +4,7 @@
       "Bash(git checkout:*)",
       "Bash(git rm:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(gh pr:*)"
+      "Bash(git commit:*)"
     ]
   }
 }

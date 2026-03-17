@@ -1,23 +1,17 @@
-import { MESSAGE_TYPES } from '../../../../global-shared/message-type';
 import { waitForTask } from '../../../widget-components';
-import { getGithubAuthTokenWithSettings } from './get-github-auth-token-with-settings';
 
 export const openPluginUI = (input: {
   routeName: string;
-  props?: any;
+  props: any;
   other?: Record<string, any>;
-  options?: Pick<ShowUIOptions, 'visible'>;
+  options: Pick<ShowUIOptions, 'visible'>;
 }) => {
-  console.log('openPluginUI');
   const {
     routeName,
     props,
     options: { visible },
     other,
   } = input;
-
-  const route = routeName.startsWith('/') ? routeName : `/${routeName}`;
-
   waitForTask(
     new Promise(() => {
       figma.showUI(`${__uiFiles__['main']}`, {
@@ -25,20 +19,10 @@ export const openPluginUI = (input: {
         height: 540,
         visible,
       });
-
-      setTimeout(() => {
-        (async () => {
-          const { githubAuthToken, settings, locale } = await getGithubAuthTokenWithSettings();
-          figma.ui.postMessage(
-            {
-              type: MESSAGE_TYPES.SET_ROUTE,
-              data: { route: route, props, githubAuthToken, settings, locale },
-              ...other,
-            },
-            { origin: '*' }
-          );
-        })();
-      }, 100);
+      figma.ui.postMessage(
+        { type: 'route-update', data: { route: routeName, props }, ...other },
+        { origin: '*' }
+      );
     })
   );
 };

@@ -1,18 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '../contexts';
-
 const OFFLINE_TIMEOUT = 3000;
 const ONLINE_TIMEOUT = 1000;
+const message = 'You seem to be offline. Please check your connection.';
 
 export const useOffline = () => {
-  const { t } = useTranslation();
   const [warning, setWarning] = useState<string>('');
   const hideToastRef = useRef<HTMLDivElement>(null);
 
-  const showWarning = () => {
+  const showWarning = (string: string) => {
     if (!navigator.onLine) {
-      setWarning(t('errors.offline'));
+      setWarning(message);
     }
   };
 
@@ -31,7 +29,7 @@ export const useOffline = () => {
   }, []);
 
   useEffect(() => {
-    showWarning();
+    showWarning(message);
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);

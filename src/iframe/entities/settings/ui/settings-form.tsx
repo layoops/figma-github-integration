@@ -1,176 +1,92 @@
-import type { ApplicationSettings, ContentSettings } from '@/shared/lib/types';
+import type { ApplicationSettings } from '@/entities/settings';
+import type { FormEvent } from 'react';
 
-import { CheckboxGroup, FormControl, Select, Text, TextInput } from '@primer/react';
-import { useForm } from '@tanstack/react-form';
+import { useEffect, useState } from 'react';
 
-import { useAppContext, useTranslation } from '@/shared/lib/contexts';
-import { CheckboxField, Form } from '@/shared/ui';
+import { MESSAGE_TYPES } from '@/external/message-type';
+import { useAppContext } from '@/shared/lib/contexts';
+import { Button, Checkbox, Form, FormTitle } from '@/shared/ui/components';
 
-import { sendSettingsToParent } from '../utils';
-
-const contentDefaults: ContentSettings = {
-  includeComments: true,
-  includeLabels: true,
-  includeAssignees: false,
-  includeProjects: false,
-  includeMilestone: false,
-  includeRelationship: true,
-  includeDevelopment: false,
-};
-
-const projectDefaultFormData: ApplicationSettings['project'] = {
-  customField: 'Status',
-};
-
-const CONTENT_FIELD_KEYS: (keyof ContentSettings)[] = [
-  'includeComments',
-  'includeAssignees',
-  'includeLabels',
-  'includeProjects',
-  'includeMilestone',
-  'includeRelationship',
-  'includeDevelopment',
-];
+import { CustomProjectInput } from './custom-project-input';
+import { LinkedCheckbox } from './linked-checkbox';
 
 export const SettingsForm = () => {
-  const { applicationSettings, setApplicationSettings } = useAppContext();
-  const { t, locale, sendLocale: setLocale } = useTranslation();
-
-  const form = useForm({
-    defaultValues: {
-      locale: applicationSettings?.locale ?? locale ?? 'en',
-      theme: applicationSettings?.theme ?? 'auto',
-      widgetTheme: applicationSettings?.widgetTheme ?? 'light',
-      issue: applicationSettings?.issue ?? contentDefaults,
-      pullRequest: applicationSettings?.pullRequest ?? contentDefaults,
-      project: applicationSettings?.project ?? projectDefaultFormData,
-      defaultTargetUrl: applicationSettings?.defaultTargetUrl ?? '',
-    },
-    onSubmit: async ({ value }) => {
-      setApplicationSettings(value);
-      if (value.locale !== locale) {
-        setLocale(value.locale);
-      }
-      sendSettingsToParent(value);
-    },
+  const [settings, setSettings] = useState<ApplicationSettings>({
+    customField: 'Status',
+    includeLabels: true,
+    includeMilestone: false,
+    includeComments: false,
+    includeLinking: false,
   });
 
-  const renderContentSection = (section: 'issue' | 'pullRequest') => (
-    <>
-      {CONTENT_FIELD_KEYS.map((key) => (
-        <form.Field key={`${section}.${key}`} name={`${section}.${key}`}>
-          {(field) => (
-            <CheckboxField
-              checked={field.state.value}
-              label={t(`settingsForm.${section}.fields.${key}`)}
-              onChange={(val) => field.handleChange(val)}
-            />
-          )}
-        </form.Field>
-      ))}
-    </>
-  );
+  const { applicationSettings, setApplicationSettings } = useAppContext();
+
+  useEffect(() => {
+    if (applicationSettings) {
+      setSettings(applicationSettings);
+    }
+  }, [applicationSettings]);
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setApplicationSettings(settings);
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: MESSAGE_TYPES.SEND_GITHUB_SETTINGS,
+          data: {
+            settings: { ...settings },
+          },
+        },
+      },
+      '*'
+    );
+  };
 
   return (
-    <Form id="settings-form" mode="submit" onAction={form.handleSubmit}>
-      <form.Field name="locale">
-        {(field) => (
-          <FormControl>
-            <FormControl.Label>{t('settingsForm.language.label')}</FormControl.Label>
-            <Select
-              block
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value as any)}
-            >
-              <Select.Option value="en">{t('settingsForm.language.values.en')}</Select.Option>
-              <Select.Option value="ru">{t('settingsForm.language.values.ru')}</Select.Option>
-            </Select>
-          </FormControl>
-        )}
-      </form.Field>
-
-      <form.Field name="theme">
-        {(field) => (
-          <FormControl>
-            <FormControl.Label>{t('settingsForm.theme.label')}</FormControl.Label>
-            <Select
-              block
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value as any)}
-            >
-              <Select.Option value="auto">{t('settingsForm.theme.values.auto')}</Select.Option>
-              <Select.Option value="light">{t('settingsForm.theme.values.light')}</Select.Option>
-              <Select.Option value="dark">{t('settingsForm.theme.values.dark')}</Select.Option>
-            </Select>
-          </FormControl>
-        )}
-      </form.Field>
-
-      <form.Field name="widgetTheme">
-        {(field) => (
-          <FormControl>
-            <FormControl.Label>{t('settingsForm.widgetTheme.label')}</FormControl.Label>
-            <Select
-              block
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value as any)}
-            >
-              <Select.Option value="light">
-                {t('settingsForm.widgetTheme.values.light')}
-              </Select.Option>
-              <Select.Option value="dark">
-                {t('settingsForm.widgetTheme.values.dark')}
-              </Select.Option>
-            </Select>
-          </FormControl>
-        )}
-      </form.Field>
-
-      <CheckboxGroup>
-        <CheckboxGroup.Label>{t('settingsForm.issue.label')}</CheckboxGroup.Label>
-        {renderContentSection('issue')}
-      </CheckboxGroup>
-
-      <CheckboxGroup>
-        <CheckboxGroup.Label>{t('settingsForm.pullRequest.label')}</CheckboxGroup.Label>
-        {renderContentSection('pullRequest')}
-      </CheckboxGroup>
-
-      <div>
-        <Text as="p" size="small" weight="semibold">
-          {t('settingsForm.project.label')}
-        </Text>
-        <form.Field name="project.customField">
-          {(field) => (
-            <FormControl>
-              <FormControl.Label>{t('settingsForm.project.fields.customField')}</FormControl.Label>
-              <TextInput
-                block
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-              <FormControl.Caption>
-                {t('settingsForm.project.fields.customFieldCaption')}
-              </FormControl.Caption>
-            </FormControl>
-          )}
-        </form.Field>
-      </div>
-
-      <form.Field name="defaultTargetUrl">
-        {(field) => (
-          <FormControl>
-            <FormControl.Label>{t('settingsForm.defaultTargetUrl.label')}</FormControl.Label>
-            <TextInput
-              block
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder={t('settingsForm.defaultTargetUrl.placeholder')}
-            />
-            <FormControl.Caption>{t('settingsForm.defaultTargetUrl.caption')}</FormControl.Caption>
-          </FormControl>
-        )}
-      </form.Field>
-    </Form>
+    <div>
+      <Form
+        onSubmit={onSubmit}
+        footer={
+          <Button type="submit" size="large" appearance="primary">
+            Save Settings
+          </Button>
+        }
+      >
+        <FormTitle text="Settings" />
+        <CustomProjectInput
+          value={settings.customField}
+          onChange={({ target }) => setSettings({ ...settings, customField: target.value })}
+          label={"Project's custom field"}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <Checkbox
+            size="medium"
+            label={'Include labels'}
+            checked={settings.includeLabels}
+            onChange={({ target }) => setSettings({ ...settings, includeLabels: target.checked })}
+          />
+          <Checkbox
+            size="medium"
+            label={'Include comments'}
+            checked={settings.includeComments}
+            onChange={({ target }) => setSettings({ ...settings, includeComments: target.checked })}
+          />
+          <Checkbox
+            size="medium"
+            label={'Include milestone'}
+            checked={settings.includeMilestone}
+            onChange={({ target }) =>
+              setSettings({ ...settings, includeMilestone: target.checked })
+            }
+          />
+          <LinkedCheckbox
+            label={'Include linking between PR and Issues'}
+            checked={settings.includeLinking}
+            onChange={({ target }) => setSettings({ ...settings, includeLinking: target.checked })}
+          />
+        </div>
+      </Form>
+    </div>
   );
 };

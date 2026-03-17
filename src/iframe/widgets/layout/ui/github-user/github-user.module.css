@@ -1,0 +1,16 @@
+.user {
+  display: flex;
+  background: #f6f8fa;
+  padding: 8px 20px;
+  border-bottom: 1px solid #d8dee4;
+  justify-content: space-between;
+  height: 50px;
+  align-items:center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .user {
+    background: #020409;
+    border-color: #32363d;
+  }
+}

@@ -1,2 +1,1 @@
-export { SettingsPage } from './ui';
-export { settingsRoute } from './routing';
+export * from './settings-page';

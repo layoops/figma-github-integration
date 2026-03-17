@@ -1,0 +1,76 @@
+.error-message {
+  padding: 12px;
+
+  border: 1px solid;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  border-radius: 6px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.error-message-status-error {
+  color: #cf222e;
+  background: #ffebe9;
+  border-color: #ffc1c0;
+}
+.error-message-status-warning {
+  color: #9a6700;
+  background: #fff8c5;
+  border-color: rgb(212, 167, 43, 0.4);
+}
+
+.error-message-direction-vertical {
+  flex-direction: column;
+  align-items: center;
+}
+
+.error-message-direction-horizontal {
+  flex-direction: row;
+}
+.error-message-icon-position-top {
+  flex-direction: column;
+}
+
+.error-message-icon-position-bottom {
+  flex-direction: column-reverse;
+}
+
+.error-message-icon-size-small {
+  height: 12px;
+  width: 12px;
+}
+.error-message-icon-size-medium {
+  height: 16px;
+  width: 16px;
+}
+.error-message-icon-size-large {
+  height: 24px;
+  width: 24px;
+}
+.error-message-icon-size-very-large {
+  margin: 8px;
+  height: 48px;
+  width: 48px;
+}
+
+.error-message-icon {
+  padding-top: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-message-status-error {
+    color: #ffebe9;
+    background: rgba(248, 81, 73, 0.1);
+    border-color: rgba(248, 81, 73, 0.4);
+  }
+
+  .error-message-status-warning {
+    color: #fff8c5;
+    background: #9a6700;
+    border-color: rgb(212, 167, 43, 0.4);
+  }
+
+}

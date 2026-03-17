@@ -1,49 +1,34 @@
-'use client';
+import ReactDOM from 'react-dom';
+import { MemoryRouter as Router } from 'react-router-dom';
 
-import { useMemo } from 'react';
-import { createRoot } from 'react-dom/client';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider } from '@tanstack/react-router';
-
-import '@primer/primitives/dist/css/functional/themes/light.css';
 import './styles/app.css';
 
-import { InternationalizationProvider } from '@/shared/lib/contexts';
-import { AppContext, useAppContextSetup } from '@/shared/lib/contexts/app-context';
-import { queryClient } from '@/shared/lib/react-query';
-import { router } from '@/shared/routing';
+import { AppContextProvider } from '@/shared/lib/contexts/app-context';
+import { Layout } from '@/widgets/layout';
 
-const InnerApp = () => {
-  const appData = useAppContextSetup();
+import { MyRoutes } from './routes/routes';
+import { ROUTES, ROUTES_MAP } from './routes/routes-map';
 
-  const routerContext = useMemo(() => {
-    return {
-      queryClient, // Это стабильно
-      auth: {
-        token: appData.githubAccessToken,
-        settings: appData.applicationSettings,
-      },
-    };
-  }, [appData.githubAccessToken, appData.applicationSettings]);
-
+const Main = () => {
   return (
-    <AppContext.Provider value={appData}>
-      <RouterProvider router={router} context={routerContext} />
-    </AppContext.Provider>
-  );
-};
-
-const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <InternationalizationProvider>
-        <InnerApp />
-      </InternationalizationProvider>
-    </QueryClientProvider>
+    <Router
+      initialEntries={[
+        ROUTES_MAP[ROUTES.IMPORT],
+        ROUTES_MAP[ROUTES.CREATE],
+        ROUTES_MAP[ROUTES.SETTINGS],
+        ROUTES_MAP[ROUTES.RESYNC],
+      ]}
+      initialIndex={0}
+    >
+      <AppContextProvider>
+        <Layout>
+          <MyRoutes />
+        </Layout>
+      </AppContextProvider>
+    </Router>
   );
 };
 
 const domNode = document.getElementById('root') as HTMLElement;
-const root = createRoot(domNode);
 
-root.render(<App />);
+ReactDOM.render(<Main />, domNode);

@@ -6,13 +6,13 @@ import { useWidgetInit } from '../shared/lib/hooks';
 import { Layout } from '../widgets/layout';
 
 function MainWidget() {
-  const { widgetType, widgetTheme } = useWidgetInit();
+  const { widgetType } = useWidgetInit();
 
   return (
-    <Layout widgetTheme={widgetTheme}>
+    <Layout>
       {widgetType === 'init' && <WidgetInit />}
       {widgetType === 'issue' && <IssueWidget />}
-      {widgetType === 'pullRequest' && <PullRequestWidget />}
+      {widgetType === 'pull-request' && <PullRequestWidget />}
       {widgetType === 'project' && <ProjectWidget />}
     </Layout>
   );

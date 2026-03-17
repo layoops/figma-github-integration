@@ -1,1 +1,1 @@
-export { PullRequestContent } from './pull-request-content';
+export * from './pull-request-content';

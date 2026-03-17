@@ -1,8 +1,6 @@
 import type { DraftIssue } from '@octokit/graphql-schema';
 
-import { MESSAGE_TYPES } from '@/global-shared/message-type';
 import { githubGraphqlApi } from '@/shared/api/graphql/github-graphql-api';
-import { sendMessageToWidget } from '@/shared/lib/utils';
 
 import { CREATE_DRAFT_ISSUE_QUERY } from '../api/create-issue-query';
 
@@ -33,22 +31,21 @@ export async function createDraftIssue({ variables: { id, title, body }, token }
 }
 
 export const linkCreatedDraftIssue = async ({
-  variables: { id, passedData },
+  variables: { id, type = 'import-github-issue', passedData },
   token,
 }: {
   token: string;
   variables: {
     id: string;
+    type?: string;
     passedData: { title: string; body: string };
   };
 }) => {
-  if (!id) {
-    return;
-  }
+  if (!id) return;
   const data = await createDraftIssue({
     variables: { id: id, ...passedData },
     token,
   });
-  sendMessageToWidget({ type: MESSAGE_TYPES.IMPORT_GITHUB_ISSUE, data });
+  window.parent.postMessage({ pluginMessage: { type, data } }, '*');
   return data;
 };

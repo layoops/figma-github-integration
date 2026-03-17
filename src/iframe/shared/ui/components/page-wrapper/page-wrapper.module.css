@@ -1,0 +1,7 @@
+.page-wrapper {
+  padding: 12px 20px;
+  height: 100%;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
