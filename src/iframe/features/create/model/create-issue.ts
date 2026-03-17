@@ -1,6 +1,6 @@
 import type { Issue } from '@octokit/graphql-schema';
 
-import { githubGraphqlApi } from '@/shared/api/graphql/github-graphql-api';
+import { githubRequest } from '@/shared/api/graphql/github-graphql-api';
 
 import { CREATE_ISSUE_QUERY } from '../api/create-issue-query';
 
@@ -13,39 +13,28 @@ type GetIssueProps = {
   token: string;
 };
 
-export async function createIssue({ variables: { id, title, body }, token }: GetIssueProps) {
-  const response = await githubGraphqlApi({
-    token,
-    body: JSON.stringify({
-      query: CREATE_ISSUE_QUERY,
-      variables: {
-        id: id,
-        title: title,
-        body: body,
-      },
-    }),
-  });
-
-  const json = await response.json();
-  return json?.data.createIssue.issue as Issue;
-}
-
-export const linkCreatedIssue = async ({
-  variables: { id, type = 'import-github-issue', passedData },
-  token,
-}: {
-  token: string;
-  variables: {
-    id: string;
-    type?: string;
-    passedData: { title: string; body: string };
+type IssueQueryResponse = {
+  createIssue: {
+    issue: Issue | null;
   };
-}) => {
-  if (!id) return;
-  const data = await createIssue({
-    variables: { id: id, ...passedData },
+};
+
+export async function createIssue({ variables: { id, title, body }, token }: GetIssueProps) {
+  const response = await githubRequest<IssueQueryResponse>({
+    query: CREATE_ISSUE_QUERY,
+    variables: {
+      id,
+      includeMilestone: true,
+      includeComments: true,
+      includeLabels: true,
+      includeDevelopment: true,
+      title: title,
+      body: body,
+    },
     token,
   });
-  window.parent.postMessage({ pluginMessage: { type, data } }, '*');
+
+  const data = response?.createIssue.issue;
+
   return data;
-};
+}

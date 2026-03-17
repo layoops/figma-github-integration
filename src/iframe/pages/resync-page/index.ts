@@ -1,1 +1,2 @@
-export * from './resync-page';
+export { ResyncPage } from './ui';
+export { resyncRoute } from './routing';
